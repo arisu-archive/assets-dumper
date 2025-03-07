@@ -1,0 +1,69 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.24']
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/go/pkg/mod
+          $(go env GOMODCACHE)
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Setup environment
+      run: |
+        make prepare
+
+    - name: Run tests
+      run: |
+        make test
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        file: coverage.out
+        flags: unittests
+        env_vars: OS,PYTHON
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Run linter
+      run: |
+        go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1 run ./... --timeout 5m
+
+    - name: Security audit
+      run: |
+        go run golang.org/x/vuln/cmd/govulncheck@latest ./...
