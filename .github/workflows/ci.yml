@@ -35,6 +35,7 @@ jobs:
     - name: Setup environment
       run: |
         make prepare
+        make mocks
 
     - name: Run tests
       run: |
