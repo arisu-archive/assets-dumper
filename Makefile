@@ -57,7 +57,7 @@ mocks:
 ## test: run unit tests
 .PHONY: test
 test:
-	ginkgo -r -cover -coverprofile=coverage.out ./...
+	go test -race -cover -coverprofile="coverage.out" ./...
 
 ## build: build the application
 .PHONY: build
