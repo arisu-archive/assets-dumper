@@ -78,8 +78,10 @@ jobs:
         make tidy
 
     - name: Run linter
-      run: |
-        go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1 run ./... --timeout 5m
+      uses: golangci/golangci-lint-action@v6.5.0
+      with:
+        version: v1.64
+        args: --timeout 5m
 
     - name: Security audit
       run: |
