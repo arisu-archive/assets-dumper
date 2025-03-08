@@ -36,7 +36,7 @@ var _ = Describe("Downloader", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		mockClient = new(mocks.MockClient)
-		ctx, cancelFunc = context.WithCancel(context.Background()) //nolint:fatcontext // False positive
+		ctx, cancelFunc = context.WithCancel(context.Background()) //nolint:fatcontext //False positive
 	})
 
 	AfterEach(func() {
@@ -125,7 +125,7 @@ var _ = Describe("Downloader", func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				mockClient.On("DownloadResource", mock.Anything, mock.Anything).
-					Return(func(ctx context.Context, path string) io.ReadCloser {
+					Return(func(context.Context, string) io.ReadCloser {
 						return io.NopCloser(strings.NewReader("test data"))
 					}, int64(9), nil)
 			})

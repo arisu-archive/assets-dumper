@@ -94,7 +94,7 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 	return strings.TrimSpace(string(resp.Body())), nil
 }
 
-func (c *Client) IsResourceCached(ctx context.Context, resource resourceapi.Resource, fullPath string) bool {
+func (c *Client) IsResourceCached(_ context.Context, resource resourceapi.Resource, fullPath string) bool {
 	// 1. If file not found, download it.
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		return true
@@ -118,7 +118,7 @@ func (*Client) ComputeHash(fullPath string) (string, error) {
 	}
 	defer reader.Close()
 	hash := xxhash.New()
-	if _, copyErr := io.Copy(hash, reader); err != nil {
+	if _, copyErr := io.Copy(hash, reader); copyErr != nil {
 		return "", fmt.Errorf("failed to copy file: %w", copyErr)
 	}
 	return hex.EncodeToString(hash.Sum(nil)), nil
