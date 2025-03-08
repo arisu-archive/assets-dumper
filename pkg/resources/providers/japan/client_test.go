@@ -3,6 +3,7 @@ package japan_test
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"strings"
 
@@ -14,7 +15,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/arisu-archive/assets-dumper/pkg/japan"
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
+	"github.com/arisu-archive/assets-dumper/pkg/resources/providers/japan"
 )
 
 // Define a custom RoundTripper for url redirects.
@@ -154,7 +156,10 @@ var _ = Describe("Japan Client", func() {
 				),
 			)
 
-			data, err := client.GetResource(ctx, "images/icon1.png")
+			reader, size, err := client.DownloadResource(ctx, "images/icon1.png")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(len(resourceContent))))
+			data, err := io.ReadAll(reader)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(data).To(Equal(resourceContent))
 		})
@@ -240,12 +245,12 @@ var _ = Describe("Japan Client", func() {
 			)
 
 			// Filter for only media files
-			resources, err := client.GetResources(ctx, "MediaResources/**")
+			resources, err := client.ListResources(ctx, "MediaResources/**")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resources).To(HaveLen(2))
 			Expect(resources).To(ContainElements(
-				"MediaResources/media/image1.png",
-				"MediaResources/media/audio/sound1.mp3",
+				resourceapi.Resource{Path: "MediaResources/media/image1.png", Size: 0, Hash: "0"},
+				resourceapi.Resource{Path: "MediaResources/media/audio/sound1.mp3", Size: 0, Hash: "0"},
 			))
 		})
 	})

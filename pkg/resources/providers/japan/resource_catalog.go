@@ -30,7 +30,7 @@ type TableCatalog struct {
 type TableBundle struct {
 	Path            string
 	Bytes           int64
-	Crc32           int64
+	Crc             int64
 	IsInBuild       bool
 	IsChanged       bool
 	IsPrologue      bool

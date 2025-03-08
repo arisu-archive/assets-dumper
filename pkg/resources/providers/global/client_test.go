@@ -3,6 +3,7 @@ package global_test
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"strings"
 
@@ -12,7 +13,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/arisu-archive/assets-dumper/pkg/global"
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
+	"github.com/arisu-archive/assets-dumper/pkg/resources/providers/global"
 )
 
 // Define a custom RoundTripper for url redirects.
@@ -143,10 +145,13 @@ var _ = Describe("Global Client", func() {
 			)
 
 			// Get resources with a filter that matches only images
-			resources, err := client.GetResources(ctx, "images/**")
+			resources, err := client.ListResources(ctx, "images/**")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resources).To(HaveLen(2))
-			Expect(resources).To(ContainElements("images/icon1.png", "images/icon2.png"))
+			Expect(resources).To(ContainElements(
+				resourceapi.Resource{Path: "images/icon1.png", Size: 100},
+				resourceapi.Resource{Path: "images/icon2.png", Size: 200},
+			))
 		})
 	})
 
@@ -185,7 +190,10 @@ var _ = Describe("Global Client", func() {
 				),
 			)
 
-			data, err := client.GetResource(ctx, "images/icon1.png")
+			reader, size, err := client.DownloadResource(ctx, "images/icon1.png")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(len(resourceContent))))
+			data, err := io.ReadAll(reader)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(data).To(Equal(resourceContent))
 		})

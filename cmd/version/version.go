@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/arisu-archive/assets-dumper/cmd"
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
 	"github.com/arisu-archive/assets-dumper/pkg/resources"
 )
 
@@ -35,7 +36,7 @@ func NewCommand() Command {
 }
 
 func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
-	s := resources.GetServer(c.opts.server)
+	s := resourceapi.GetServer(c.opts.server)
 	if !s.IsValid() {
 		return fmt.Errorf("invalid server: %s", c.opts.server)
 	}

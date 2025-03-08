@@ -1,4 +1,4 @@
-package resources
+package resourceapi
 
 type Server string
 

@@ -4,90 +4,83 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/go-resty/resty/v2"
 
-	"github.com/arisu-archive/memorypack-go"
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
 )
+
+var _ resourceapi.Client = (*Client)(nil)
 
 type Client struct {
 	client       *resty.Client
 	resourcePath string
+	retriever    *CatalogRetriever
 }
 
 func NewClient(client *resty.Client) *Client {
-	return &Client{
+	c := &Client{
 		client: client,
+	}
+	c.retriever = NewCatalogRetriever(c)
+	return c
+}
+
+func NewClientWithRetriever(client *resty.Client, retriever *CatalogRetriever) *Client {
+	return &Client{
+		client:    client,
+		retriever: retriever,
 	}
 }
 
-func (c *Client) GetResource(ctx context.Context, filePath string) ([]byte, error) {
+func (c *Client) DownloadResource(ctx context.Context, filePath string) (io.ReadCloser, int64, error) {
 	resourcePath, err := c.getResourcePath(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get resource path: %w", err)
+		return nil, 0, fmt.Errorf("failed to get resource path: %w", err)
 	}
 
 	fullPath := resourcePath + "/" + filePath
-	resp, err := c.client.R().SetContext(ctx).Get(fullPath)
+	resp, err := c.client.R().
+		SetDoNotParseResponse(true).
+		SetContext(ctx).
+		Get(fullPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to download resource: %w", err)
+		return nil, 0, fmt.Errorf("failed to download resource: %w", err)
 	}
-	return resp.Body(), nil
+	return resp.RawBody(), resp.RawResponse.ContentLength, nil
 }
 
-func (c *Client) GetResources(ctx context.Context, filter string) ([]string, error) {
-	// Getting the TableCatalog.bytes, MediaCatalog.bytes, and so on.
-	// Deserialize the catalog file using memorypack-go.
-	// Then, apply the filter to the catalog file.
-	// Finally, download the resources.
-	tableCatalogData, err := c.GetResource(ctx, "TableBundles/TableCatalog.bytes")
+func (c *Client) getResource(ctx context.Context, filePath string) ([]byte, error) {
+	reader, _, err := c.DownloadResource(ctx, filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get table catalog: %w", err)
+		return nil, fmt.Errorf("failed to get resource: %w", err)
 	}
+	defer reader.Close()
 
-	mediaCatalogData, err := c.GetResource(ctx, "MediaResources/Catalog/MediaCatalog.bytes")
+	data, err := io.ReadAll(reader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get media catalog: %w", err)
+		return nil, fmt.Errorf("failed to read resource: %w", err)
 	}
+	return data, nil
+}
 
-	bundleDownloadInfoData, err := c.GetResource(ctx, "Android/bundleDownloadInfo.json")
+func (c *Client) ListResources(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
+	// First, fetch and parse all catalog files
+	resources, err := c.retriever.CollectAllResources(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get bundle download info: %w", err)
+		return nil, err
 	}
 
-	var tableCatalog TableCatalog
-	err = memorypack.Deserialize(tableCatalogData, &tableCatalog)
-	if err != nil {
-		return nil, fmt.Errorf("failed to deserialize table catalog: %w", err)
+	// Then apply the filter
+	if filter == "" || filter == "*" {
+		return resources, nil
 	}
 
-	var mediaCatalog MediaCatalog
-	err = memorypack.Deserialize(mediaCatalogData, &mediaCatalog)
-	if err != nil {
-		return nil, fmt.Errorf("failed to deserialize media catalog: %w", err)
-	}
-
-	var bundleDownloadInfo BundleDownloadInfo
-	err = json.Unmarshal(bundleDownloadInfoData, &bundleDownloadInfo)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal bundle download info: %w", err)
-	}
-
-	resources := make([]string, 0)
-	for _, tableBundle := range tableCatalog.TableBundles {
-		resources = append(resources, "TableBundles/"+tableBundle.Path)
-	}
-	for _, mediaBundle := range mediaCatalog.MediaBundles {
-		resources = append(resources, "MediaResources/"+mediaBundle.Path)
-	}
-	for _, resource := range bundleDownloadInfo.Files {
-		resources = append(resources, "Android/"+resource.Name)
-	}
-
-	filteredResources := make([]string, 0)
+	filteredResources := make([]resourceapi.Resource, 0)
 	for _, resource := range resources {
-		matches, matchErr := doublestar.Match(filter, resource)
+		matches, matchErr := doublestar.Match(filter, resource.Path)
 		if matchErr != nil {
 			return nil, fmt.Errorf("failed to match resource: %w", matchErr)
 		}

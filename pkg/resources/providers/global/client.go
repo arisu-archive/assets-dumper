@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/url"
 	"path"
@@ -13,7 +14,11 @@ import (
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
+
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
 )
+
+var _ resourceapi.Client = (*Client)(nil)
 
 type Client struct {
 	client       *resty.Client
@@ -27,7 +32,7 @@ func NewClient(client *resty.Client) *Client {
 	}
 }
 
-func (c *Client) GetResources(ctx context.Context, filter string) ([]string, error) {
+func (c *Client) ListResources(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
 	if _, err := c.getResourceURI(ctx); err != nil {
 		return nil, fmt.Errorf("failed to get resource path: %w", err)
 	}
@@ -43,7 +48,7 @@ func (c *Client) GetResources(ctx context.Context, filter string) ([]string, err
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
-	resources := []string{}
+	resources := []resourceapi.Resource{}
 	for _, resource := range result.Resources {
 		slog.DebugContext(ctx, "resource", "resource", resource.ResourcePath)
 		// Given a list of folder paths, we need to filter out the ones that don't match the filter using glob
@@ -53,24 +58,28 @@ func (c *Client) GetResources(ctx context.Context, filter string) ([]string, err
 			continue
 		}
 		if matches {
-			resources = append(resources, resource.ResourcePath)
+			resources = append(resources, resourceapi.Resource{
+				Path: resource.ResourcePath,
+				Size: resource.ResourceSize,
+				Hash: resource.ResourceHash,
+			})
 		}
 	}
 
 	return resources, nil
 }
 
-func (c *Client) GetResource(ctx context.Context, resourcePath string) ([]byte, error) {
+func (c *Client) DownloadResource(ctx context.Context, resourcePath string) (io.ReadCloser, int64, error) {
 	resourceURI, err := c.getResourceURI(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get resource path: %w", err)
+		return nil, 0, fmt.Errorf("failed to get resource path: %w", err)
 	}
 	fullPath := fmt.Sprintf("%s/%s", resourceURI, strings.TrimPrefix(resourcePath, "/"))
-	resp, err := c.client.R().SetContext(ctx).Get(fullPath)
+	resp, err := c.client.R().SetDoNotParseResponse(true).SetContext(ctx).Get(fullPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to download resource: %w", err)
+		return nil, 0, fmt.Errorf("failed to download resource: %w", err)
 	}
-	return resp.Body(), nil
+	return resp.RawBody(), resp.RawResponse.ContentLength, nil
 }
 
 func (c *Client) GetVersion(ctx context.Context) (string, error) {
