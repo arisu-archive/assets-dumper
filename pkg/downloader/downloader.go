@@ -74,9 +74,13 @@ func (d *Downloader) download(ctx context.Context, resourcePath, outputDir strin
 
 	bar := createProgressBar(p, resourcePath, size)
 	if _, writeErr := io.Copy(bar.ProxyWriter(file), reader); writeErr != nil {
+		bar.Abort(true)
 		return fmt.Errorf("failed to write resource %s: %w", resourcePath, writeErr)
 	}
 
+	if size == 0 {
+		bar.SetTotal(0, true)
+	}
 	bar.Wait()
 	slog.DebugContext(ctx, "wrote resource", "path", fullPath)
 	return nil

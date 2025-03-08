@@ -52,7 +52,7 @@ audit:
 
 .PHONY: mocks
 mocks:
-	@mockery
+	@mockery --all
 
 ## test: run unit tests
 .PHONY: test

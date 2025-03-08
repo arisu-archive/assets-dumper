@@ -1,0 +1,7 @@
+with-expecter: true
+packages:
+  github.com/arisu-archive/assets-dumper/pkg/resourceapi:
+    config:
+    interface:
+      Retriever:
+        config:
