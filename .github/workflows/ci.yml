@@ -61,6 +61,11 @@ jobs:
       with:
         go-version: '1.24'
 
+    - name: Prepare environment
+      run: |
+        make prepare
+        make mocks
+
     - name: Run linter
       run: |
         go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1 run ./... --timeout 5m
