@@ -5,4 +5,5 @@ type options struct {
 	output         string
 	filter         string
 	maxConcurrency int
+	version        string
 }

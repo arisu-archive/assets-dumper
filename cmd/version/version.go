@@ -31,6 +31,7 @@ func NewCommand() Command {
 		RunE:    cmd.RunE("version", version.execute),
 	}
 	command.Flags().StringVarP(&version.opts.server, "server", "s", "", "server to check the version from")
+	command.Flags().BoolVar(&version.opts.withoutPatch, "without-patch", false, "without patch version")
 	version.cmd = command
 	return version
 }
@@ -51,8 +52,18 @@ func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("failed to get version: %w", err)
 	}
 	slog.Info("latest version", "version", version)
+	patchVersion := ""
+	if !c.opts.withoutPatch {
+		patchVersion, err = client.GetPatchVersion(cobraCmd.Context())
+		if err != nil {
+			return fmt.Errorf("failed to get patch version: %w", err)
+		}
+		slog.Info("patch version", "version", patchVersion)
+	}
 
-	_, err = cobraCmd.OutOrStdout().Write([]byte(version + "\n"))
+	// Concatenate version and patch version
+	fullVersion := fmt.Sprintf("%s-%s", version, patchVersion)
+	_, err = cobraCmd.OutOrStdout().Write([]byte(fullVersion + "\n"))
 	if err != nil {
 		return fmt.Errorf("failed to write version: %w", err)
 	}

@@ -1,5 +1,6 @@
 package version
 
 type options struct {
-	server string
+	server       string
+	withoutPatch bool
 }

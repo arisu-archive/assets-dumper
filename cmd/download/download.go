@@ -42,6 +42,8 @@ func NewCommand() Command {
 	command.Flags().StringVarP(&download.opts.server, "server", "s", "", "server to download from")
 	command.Flags().StringVarP(&download.opts.output, "output", "o", "", "path to download to")
 	command.Flags().StringVarP(&download.opts.filter, "filter", "f", "**", "glob filter to apply to the download")
+	command.Flags().StringVarP(&download.opts.version, "version", "", "", "version to download")
+	command.Flags().StringVarP(&download.opts.version, "ver", "", "", "version to download (alias)")
 	command.Flags().IntVarP(
 		&download.opts.maxConcurrency,
 		"max-concurrency",

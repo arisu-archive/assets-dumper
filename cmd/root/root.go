@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/arisu-archive/assets-dumper/cmd/catalog"
 	"github.com/arisu-archive/assets-dumper/cmd/download"
 	"github.com/arisu-archive/assets-dumper/cmd/version"
 )
@@ -33,7 +34,7 @@ func Execute(config ExecuteConfig) {
 func (r *command) Execute(args []string) {
 	r.cmd.SetArgs(args)
 	if err := r.cmd.Execute(); err != nil {
-		slog.Error("go-standard-layout-gen failed.", slog.Any("error", err))
+		slog.Error("assets-dumper failed.", slog.Any("error", err))
 		r.exit(1)
 	}
 }
@@ -73,6 +74,7 @@ You can download assets from the global or japan server.`,
 	root.cmd.PersistentFlags().BoolVarP(&root.verbose, "verbose", "v", false, "verbose mode")
 	root.cmd.AddCommand(download.NewCommand().Command())
 	root.cmd.AddCommand(version.NewCommand().Command())
+	root.cmd.AddCommand(catalog.NewCommand().Command())
 	root.cmd.SetIn(config.In)
 	root.cmd.SetOut(config.Out)
 	root.cmd.SetErr(config.Err)

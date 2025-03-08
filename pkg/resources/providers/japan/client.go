@@ -5,11 +5,13 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"hash/crc32"
 	"io"
+	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
-	"github.com/cespare/xxhash/v2"
 	"github.com/go-resty/resty/v2"
 
 	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
@@ -21,6 +23,7 @@ type Client struct {
 	client       *resty.Client
 	resourcePath string
 	retriever    *CatalogRetriever
+	version      string
 }
 
 func NewClient(client *resty.Client) *Client {
@@ -35,6 +38,24 @@ func NewClientWithRetriever(client *resty.Client, retriever *CatalogRetriever) *
 	return &Client{
 		client:    client,
 		retriever: retriever,
+	}
+}
+
+func (c *Client) WithVersion(version string) resourceapi.Client {
+	c.version = version
+	return c
+}
+
+func (c *Client) GetCatalog(ctx context.Context, catalogType resourceapi.CatalogType) (any, error) {
+	switch catalogType {
+	case resourceapi.CatalogTypeTableBundle:
+		return c.retriever.GetTableCatalog(ctx)
+	case resourceapi.CatalogTypeMediaResources:
+		return c.retriever.GetMediaCatalog(ctx)
+	case resourceapi.CatalogTypeBundleDownloadInfo:
+		return c.retriever.GetBundleDownloadInfo(ctx)
+	default:
+		return nil, fmt.Errorf("unknown catalog type: %s", catalogType)
 	}
 }
 
@@ -55,30 +76,11 @@ func (c *Client) DownloadResource(ctx context.Context, filePath string) (io.Read
 	return resp.RawBody(), resp.RawResponse.ContentLength, nil
 }
 
-func (c *Client) getResource(ctx context.Context, filePath string) ([]byte, error) {
-	reader, _, err := c.DownloadResource(ctx, filePath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get resource: %w", err)
-	}
-	defer reader.Close()
-
-	data, err := io.ReadAll(reader)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read resource: %w", err)
-	}
-	return data, nil
-}
-
 func (c *Client) ListResources(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
 	// First, fetch and parse all catalog files
 	resources, err := c.retriever.CollectAllResources(ctx)
 	if err != nil {
 		return nil, err
-	}
-
-	// Then apply the filter
-	if filter == "" || filter == "*" {
-		return resources, nil
 	}
 
 	filteredResources := make([]resourceapi.Resource, 0)
@@ -103,10 +105,23 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 	return string(resp.Body()), nil
 }
 
-func (c *Client) IsResourceCached(_ context.Context, resource resourceapi.Resource, fullPath string) bool {
+func (c *Client) GetPatchVersion(ctx context.Context) (string, error) {
+	// Get the patch version from the AddressablesCatalogURLRoot
+	rootURL, err := c.getResourcePath(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to get resource path: %w", err)
+	}
+
+	// Get it from the path. Last part of the path is the patch version.
+	parts := strings.Split(rootURL, "/")
+	patchVersion := parts[len(parts)-1]
+	return patchVersion, nil
+}
+
+func (c *Client) IsResourceCached(ctx context.Context, resource resourceapi.Resource, fullPath string) bool {
 	// 1. If file not found, download it.
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
-		return true
+		return false
 	}
 	// 2. If file found, compare the file hash.
 	ourHash, err := c.ComputeHash(fullPath)
@@ -114,27 +129,32 @@ func (c *Client) IsResourceCached(_ context.Context, resource resourceapi.Resour
 		return false
 	}
 	if ourHash != resource.Hash {
-		return true
+		slog.DebugContext(ctx, "resource is MISSED. HASH MISMATCH!!",
+			"path", fullPath,
+			"ourHash", ourHash,
+			"resourceHash", resource.Hash)
+		return false
 	}
-	return false
+	slog.DebugContext(ctx, "resource is cached!!", "path", fullPath)
+	return true
 }
 
 func (*Client) ComputeHash(fullPath string) (string, error) {
-	// Read the file, using xxhash.
+	// Read the file, using CRC32.
 	reader, err := os.Open(fullPath)
 	if err != nil {
 		return "", fmt.Errorf("failed to open file: %w", err)
 	}
 	defer reader.Close()
-	hash := xxhash.New()
+	hash := crc32.NewIEEE()
 	if _, copyErr := io.Copy(hash, reader); copyErr != nil {
 		return "", fmt.Errorf("failed to copy file: %w", copyErr)
 	}
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
-func (c *Client) getAssetsURL(version string) (string, error) {
-	resp, err := c.client.R().Get(fmt.Sprintf(GetAssetsVersionURL, version))
+func (c *Client) getCatalogURL(ctx context.Context, version string) (string, error) {
+	resp, err := c.client.R().SetContext(ctx).Get(fmt.Sprintf(GetAssetsVersionURL, version))
 	if err != nil || resp.IsError() {
 		return "", fmt.Errorf("failed to send request to get assets version: %w", err)
 	}
@@ -144,15 +164,28 @@ func (c *Client) getAssetsURL(version string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to unmarshal response: %w", err)
 	}
-	return result.ServerInfoDataURL, nil
+
+	// Get the version check response.
+	slog.DebugContext(ctx, "getCatalogURL", "resp", string(resp.Body()))
+	versionCheckResp, err := c.versionCheck(ctx, result.ServerInfoDataURL)
+	if err != nil {
+		return "", fmt.Errorf("failed to get version check response: %w", err)
+	}
+
+	// Get the assets URL.
+	// Get connection group based on result.DefaultConnectionGroup
+	for _, connectionGroup := range versionCheckResp.ConnectionGroups {
+		if connectionGroup.Name == result.DefaultConnectionGroup {
+			latestVersionIndex := len(connectionGroup.OverrideConnectionGroups) - 1
+			return connectionGroup.OverrideConnectionGroups[latestVersionIndex].AddressablesCatalogURLRoot, nil
+		}
+	}
+
+	return "", fmt.Errorf("failed to get catalog root URL: %w", err)
 }
 
-func (c *Client) versionCheck(version string) (*VersionCheckResponse, error) {
-	assetsURL, err := c.getAssetsURL(version)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get assets version: %w", err)
-	}
-	resp, err := c.client.R().Get(assetsURL)
+func (c *Client) versionCheck(ctx context.Context, assetsURL string) (*VersionCheckResponse, error) {
+	resp, err := c.client.R().SetContext(ctx).Get(assetsURL)
 	if err != nil || resp.IsError() {
 		return nil, fmt.Errorf("failed to perform version check: %v", resp.Body())
 	}
@@ -175,12 +208,10 @@ func (c *Client) getResourcePath(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("failed to get version: %w", err)
 	}
 
-	resp, err := c.versionCheck(version)
+	catalogURL, err := c.getCatalogURL(ctx, version)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get catalog URL: %w", err)
 	}
-
-	// TODO: Support incremental update.
-	c.resourcePath = resp.ConnectionGroups[0].OverrideConnectionGroups[1].AddressablesCatalogURLRoot
+	c.resourcePath = catalogURL
 	return c.resourcePath, nil
 }

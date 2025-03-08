@@ -40,9 +40,8 @@ func (d *Downloader) DownloadAll(ctx context.Context, files []string, outputDir 
 	g, ctx := errgroup.WithContext(ctx)
 	g.SetLimit(d.maxConcurrency)
 	for _, normalizedPath := range files {
-		path := normalizedPath // Create a copy for the closure
 		g.Go(func() error {
-			return d.download(ctx, path, outputDir, p)
+			return d.download(ctx, normalizedPath, outputDir, p)
 		})
 	}
 

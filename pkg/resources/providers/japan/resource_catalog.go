@@ -10,32 +10,32 @@ const (
 )
 
 type MediaCatalog struct {
-	MediaBundles map[string]MediaBundle
+	MediaBundles map[string]MediaBundle `json:"MediaBundles"`
 }
 
 type MediaBundle struct {
-	Path            string
-	FileName        string
-	Bytes           int64
-	Crc             int64
-	IsPrologue      bool
-	IsSplitDownload bool
-	MediaType       MediaType
+	Path            string    `json:"Path"`
+	FileName        string    `json:"FileName"`
+	Bytes           int64     `json:"Bytes"`
+	Crc             int64     `json:"Crc"`
+	IsPrologue      bool      `json:"IsPrologue"`
+	IsSplitDownload bool      `json:"IsSplitDownload"`
+	MediaType       MediaType `json:"MediaType"`
 }
 
 type TableCatalog struct {
-	TableBundles map[string]TableBundle
+	TableBundles map[string]TableBundle `json:"TableBundles"`
 }
 
 type TableBundle struct {
-	Path            string
-	Bytes           int64
-	Crc             int64
-	IsInBuild       bool
-	IsChanged       bool
-	IsPrologue      bool
-	IsSplitDownload bool
-	Includes        []string
+	Path            string   `json:"Path"`
+	Bytes           int64    `json:"Bytes"`
+	Crc             int64    `json:"Crc"`
+	IsInBuild       bool     `json:"IsInBuild"`
+	IsChanged       bool     `json:"IsChanged"`
+	IsPrologue      bool     `json:"IsPrologue"`
+	IsSplitDownload bool     `json:"IsSplitDownload"`
+	Includes        []string `json:"Includes"`
 }
 
 type BundleDownloadInfo struct {
