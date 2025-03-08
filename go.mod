@@ -6,6 +6,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.3.0
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
 	github.com/bmatcuk/doublestar/v4 v4.8.1
+	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/go-resty/resty/v2 v2.16.0
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.21.0

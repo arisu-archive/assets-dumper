@@ -1,9 +1,9 @@
 package download
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -75,17 +75,7 @@ func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
 	if err != nil {
 		return fmt.Errorf("failed to get resource: %w", err)
 	}
-	filesToDownload := []string{}
-	for _, resourcePath := range files {
-		normalizedPath := strings.ReplaceAll(resourcePath.Path, `\`, "/")
-		fullPath := filepath.Join(c.opts.output, normalizedPath)
-		// TODO: Make it also compare the file hash.
-		if _, statErr := os.Stat(fullPath); statErr == nil {
-			slog.DebugContext(ctx, "skipping resource", "path", fullPath)
-			continue
-		}
-		filesToDownload = append(filesToDownload, normalizedPath)
-	}
+	filesToDownload := c.getFilteredFiles(ctx, client, files)
 	if len(filesToDownload) == 0 {
 		slog.DebugContext(ctx, "no resources to download")
 		return nil
@@ -96,4 +86,20 @@ func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("failed to download resources: %w", downloadErr)
 	}
 	return nil
+}
+
+func (c *command) getFilteredFiles(
+	ctx context.Context,
+	client resourceapi.Client,
+	files []resourceapi.Resource,
+) []string {
+	filesToDownload := []string{}
+	for _, resource := range files {
+		normalizedPath := strings.ReplaceAll(resource.Path, `\`, "/")
+		fullPath := filepath.Join(c.opts.output, normalizedPath)
+		if !client.IsResourceCached(ctx, resource, fullPath) {
+			filesToDownload = append(filesToDownload, normalizedPath)
+		}
+	}
+	return filesToDownload
 }

@@ -2,11 +2,14 @@ package japan
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/bmatcuk/doublestar/v4"
+	"github.com/cespare/xxhash/v2"
 	"github.com/go-resty/resty/v2"
 
 	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
@@ -98,6 +101,36 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("failed to get version: %w", err)
 	}
 	return string(resp.Body()), nil
+}
+
+func (c *Client) IsResourceCached(ctx context.Context, resource resourceapi.Resource, fullPath string) bool {
+	// 1. If file not found, download it.
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		return true
+	}
+	// 2. If file found, compare the file hash.
+	ourHash, err := c.ComputeHash(fullPath)
+	if err != nil {
+		return false
+	}
+	if ourHash != resource.Hash {
+		return true
+	}
+	return false
+}
+
+func (*Client) ComputeHash(fullPath string) (string, error) {
+	// Read the file, using xxhash.
+	reader, err := os.Open(fullPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to open file: %w", err)
+	}
+	defer reader.Close()
+	hash := xxhash.New()
+	if _, copyErr := io.Copy(hash, reader); err != nil {
+		return "", fmt.Errorf("failed to copy file: %w", copyErr)
+	}
+	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
 func (c *Client) getAssetsURL(version string) (string, error) {
