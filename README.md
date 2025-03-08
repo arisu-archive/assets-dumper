@@ -90,32 +90,14 @@ go run main.go download --server japan --output ./japan-assets --filter "**/*.pn
 4. **Parallel Download**: Downloads selected assets using concurrent workers
 5. **Storage**: Saves all downloaded assets to the specified output directory, preserving path structure
 
-## 📁 Project Structure
-
-```
-├── cmd/
-│   ├── root/          # Main command definitions
-│   ├── version/       # Version checking functionality
-│   └── download/      # Asset downloading functionality
-├── pkg/
-│   ├── global/        # Global server implementation
-│   ├── japan/         # Japan server implementation
-│   └── resources/     # Shared resource handling
-├── internal/          # Internal utilities
-├── LICENSE            # MIT License
-└── README.md          # This documentation
-```
-
 ## 📈 Roadmap
 
 - [x] Check game versions (Global/Japan)
 - [x] Download assets with filtering
 - [x] Parallel downloading
+- [x] Resource caching for faster re-downloads
+- [x] Automatic version tracking
 - [ ] Improved asset decryption
-- [ ] Resource caching for faster re-downloads
-- [ ] Support for additional game regions
-- [ ] Enhanced progress tracking for downloads
-- [ ] Automatic version tracking
 
 ## 🤝 Contributing
 
