@@ -1,0 +1,5 @@
+{
+  "input": "abcdefghij",
+  "seed": "0",
+  "expected_hash": "8b988cfe"
+}

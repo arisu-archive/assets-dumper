@@ -34,8 +34,10 @@ jobs:
 
     - name: Setup environment
       run: |
+        apt install -y xxhash
         make prepare
         make mocks
+        make generate-testdata
 
     - name: Run tests
       run: |

@@ -55,6 +55,10 @@ audit:
 mocks:
 	@mockery --all
 
+.PHONY: generate-testdata
+generate-testdata:
+	./scripts/generate_xxhash_testdata.sh
+
 ## test: run unit tests
 .PHONY: test
 test:
