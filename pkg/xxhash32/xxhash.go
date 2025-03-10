@@ -145,6 +145,12 @@ func (h *xxHash) Sum32() uint32 {
 	return acc ^ (acc >> 16)
 }
 
+func Checksum(b []byte) uint32 {
+	h := New()
+	h.Write(b)
+	return h.Sum32()
+}
+
 func (h *xxHash) processBlock(input []byte) int {
 	v1, v2, v3, v4 := h.acc1, h.acc2, h.acc3, h.acc4
 	n := len(input)
