@@ -23,7 +23,7 @@ var _ = Describe("XXHash32", func() {
 	Context("when testing with generated test vectors", func() {
 		It("should match xxhsum-verified values", func() {
 			// Get all JSON test files
-			testFiles, globErr := filepath.Glob("../../mocks/testdata/xxhash32_*.json")
+			testFiles, globErr := filepath.Glob("../../mocks/testdata/xxhash32/xxhash32_*.json")
 			Expect(globErr).NotTo(HaveOccurred(), "Failed to find test vector files")
 			Expect(testFiles).NotTo(BeEmpty(), "No test vector files found")
 

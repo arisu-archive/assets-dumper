@@ -10,11 +10,10 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-XXHASH_BINARY="scripts/xxhsum"
 INPUT="$1"
 OUTPUT_DIR="mocks/testdata/xxhash32"
 
-HASH=$(echo -n $INPUT | $XXHASH_BINARY -H0 - | cut -d ' ' -f 1)
+HASH=$(echo -n $INPUT | xxhsum -H0 - | cut -d ' ' -f 1)
 OUTPUT_FILE="${OUTPUT_DIR}/xxhash32_${HASH}.json"
 
 # Create JSON file
