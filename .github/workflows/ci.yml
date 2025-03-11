@@ -34,7 +34,7 @@ jobs:
 
     - name: Setup environment
       run: |
-        apt install -y xxhash
+        sudo apt install -y xxhash
         make prepare
         make mocks
         make generate-testdata
