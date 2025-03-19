@@ -8,6 +8,7 @@ import (
 
 	"github.com/arisu-archive/assets-dumper/cmd/catalog"
 	"github.com/arisu-archive/assets-dumper/cmd/download"
+	"github.com/arisu-archive/assets-dumper/cmd/extract"
 	"github.com/arisu-archive/assets-dumper/cmd/version"
 )
 
@@ -75,6 +76,7 @@ You can download assets from the global or japan server.`,
 	root.cmd.AddCommand(download.NewCommand().Command())
 	root.cmd.AddCommand(version.NewCommand().Command())
 	root.cmd.AddCommand(catalog.NewCommand().Command())
+	root.cmd.AddCommand(extract.NewCommand().Command())
 	root.cmd.SetIn(config.In)
 	root.cmd.SetOut(config.Out)
 	root.cmd.SetErr(config.Err)

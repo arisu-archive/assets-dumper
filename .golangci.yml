@@ -237,6 +237,11 @@ linters-settings:
             - "github.com/onsi/ginkgo"
             - "github.com/onsi/ginkgo/v2"
             - "github.com/onsi/gomega"
+      - name: blank-imports
+        arguments:
+          - allowedPackages:
+            - "github.com/mattn/go-sqlite3"
+
   misspell:
     locale: "US"
 
