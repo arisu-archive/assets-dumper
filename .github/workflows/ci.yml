@@ -23,7 +23,7 @@ jobs:
         go-version: ${{ matrix.go }}
 
     - name: Setup SSH agent
-      uses: webfactory/ssh-agent@v0.9.0
+      uses: webfactory/ssh-agent@v0.9.1
       with:
         ssh-private-key: |
           ${{secrets.ARONA_FLATBUFFERS_PRIVATE_KEY}}
@@ -69,7 +69,7 @@ jobs:
         go-version: '1.24'
 
     - name: Setup SSH agent
-      uses: webfactory/ssh-agent@v0.9.0
+      uses: webfactory/ssh-agent@v0.9.1
       with:
         ssh-private-key: |
           ${{secrets.ARONA_FLATBUFFERS_PRIVATE_KEY}}
