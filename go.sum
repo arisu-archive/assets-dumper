@@ -12,6 +12,8 @@ github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250316192052-7a2c2cd7f62
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250316192052-7a2c2cd7f62e/go.mod h1:yl0w4DM/+u8Ao36I8Hhxu6KkPGxNaF1BkKRkDTsp4jQ=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319103816-88c50717e9f2 h1:mbbLCVgW/WZw9u1c5I19cvuje4n6eNxDKVybmFB3IwM=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319103816-88c50717e9f2/go.mod h1:yl0w4DM/+u8Ao36I8Hhxu6KkPGxNaF1BkKRkDTsp4jQ=
+github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319110048-96c9d6738543 h1:MXBBWdAunKk8q54zr50VMEY7zjJAo526rMlSY02gCp0=
+github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319110048-96c9d6738543/go.mod h1:9leyiUSF/NN9kOCCQY+zn5asiafAW+dg1yJwL5LlkLw=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e h1:QLQebXrcSPbr9cxpNoDbec2nQqk/1fmLwQ3pLrOYa6g=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e/go.mod h1:44G892c0qlQbpqJWj/P94ik+a7POVCm0f4PQAuENm58=
 github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=
