@@ -37,7 +37,6 @@ jobs:
         sudo apt install -y xxhash
         make prepare
         make mocks
-        make generate-testdata
 
     - name: Run tests
       run: |

@@ -44,7 +44,7 @@ tidy:
 audit:
 	go mod verify
 	go vet ./...
-	go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1 run ./...
+	@golangci-lint run ./...
 	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
 # ==================================================================================== #
@@ -54,10 +54,6 @@ audit:
 .PHONY: mocks
 mocks:
 	@mockery --all
-
-.PHONY: generate-testdata
-generate-testdata:
-	./scripts/generate_xxhash_testdata.sh
 
 ## test: run unit tests
 .PHONY: test

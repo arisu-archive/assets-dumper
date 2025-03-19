@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/arisu-archive/memorypack-go"
 )
 
 // CatalogRetriever is a client for the catalog.
@@ -30,7 +32,7 @@ func (cr *CatalogRetriever) GetTableCatalog(ctx context.Context) (*TableCatalog,
 	}
 
 	var tableCatalog TableCatalog
-	if decodeErr := json.Unmarshal(tableCatalogData, &tableCatalog); decodeErr != nil {
+	if decodeErr := memorypack.Deserialize(tableCatalogData, &tableCatalog); decodeErr != nil {
 		return nil, fmt.Errorf("failed to unmarshal table catalog: %w", decodeErr)
 	}
 
@@ -44,7 +46,7 @@ func (cr *CatalogRetriever) GetMediaCatalog(ctx context.Context) (*MediaCatalog,
 	}
 
 	var mediaCatalog MediaCatalog
-	if decodeErr := json.Unmarshal(mediaCatalogData, &mediaCatalog); decodeErr != nil {
+	if decodeErr := memorypack.Deserialize(mediaCatalogData, &mediaCatalog); decodeErr != nil {
 		return nil, fmt.Errorf("failed to unmarshal media catalog: %w", decodeErr)
 	}
 
