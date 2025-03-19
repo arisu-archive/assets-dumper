@@ -39,7 +39,7 @@ func zipExtractor(ctx context.Context, inputPath string) (*Result, error) {
 		// All flatdata is encrypted.
 		files = append(files, ExtractedFile{
 			Name:        file.Name,
-			Size:        int(file.FileHeader.UncompressedSize64),
+			Size:        file.FileHeader.UncompressedSize64,
 			Reader:      flate.NewReader(zr),
 			IsEncrypted: true,
 		})

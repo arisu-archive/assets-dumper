@@ -8,6 +8,8 @@ github.com/arisu-archive/arona-flatbuffers v0.0.12-0.20250318191156-f62ea400e2ad
 github.com/arisu-archive/arona-flatbuffers v0.0.12-0.20250318191156-f62ea400e2ad/go.mod h1:EXDpDeAbs79PpmGtxobDj0CUjjqATDOBB8Jy3hwrcxQ=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250316192052-7a2c2cd7f62e h1:LTNKRSHPxmXpKgBbkU8vLiyO5wrwaWSWxgjxdW3QuNQ=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250316192052-7a2c2cd7f62e/go.mod h1:yl0w4DM/+u8Ao36I8Hhxu6KkPGxNaF1BkKRkDTsp4jQ=
+github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319103816-88c50717e9f2 h1:mbbLCVgW/WZw9u1c5I19cvuje4n6eNxDKVybmFB3IwM=
+github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319103816-88c50717e9f2/go.mod h1:yl0w4DM/+u8Ao36I8Hhxu6KkPGxNaF1BkKRkDTsp4jQ=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e h1:QLQebXrcSPbr9cxpNoDbec2nQqk/1fmLwQ3pLrOYa6g=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e/go.mod h1:44G892c0qlQbpqJWj/P94ik+a7POVCm0f4PQAuENm58=
 github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=

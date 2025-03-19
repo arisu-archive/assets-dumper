@@ -60,7 +60,7 @@ func (r *zipCryptoReader) verifyPassword(header zip.FileHeader) error {
 		headerBytes[i] = r.decrypt(headerBytes[i])
 	}
 
-	// Check the password against the header
+	//nolint:staticcheck // ZipCrypto uses this field to verify the password
 	expectedByte := byte(header.ModifiedTime >> 8)
 	// Does not have data descriptor
 	if !HasDataDescriptor(header.Flags) {

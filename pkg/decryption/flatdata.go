@@ -16,7 +16,7 @@ import (
 	fbsutils "github.com/arisu-archive/bluearchive-fbs-utils"
 )
 
-func flatdataReader(ctx context.Context, name string, size int, r io.Reader) (io.Reader, error) {
+func flatdataReader(ctx context.Context, name string, size uint64, r io.Reader) (io.Reader, error) {
 	t := flatdata.GetFlatDataByName(strings.ToLower(strings.TrimSuffix(name, filepath.Ext(name))))
 	if t == nil {
 		slog.WarnContext(ctx, "failed to get table by string", "name", name)

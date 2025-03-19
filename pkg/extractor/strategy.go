@@ -22,7 +22,7 @@ type Result struct {
 
 type ExtractedFile struct {
 	Name        string
-	Size        int
+	Size        uint64
 	Reader      io.Reader
 	IsEncrypted bool
 }

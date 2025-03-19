@@ -21,7 +21,7 @@ func init() {
 	registry.Store(fileFormatFlatdata, Reader(flatdataReader))
 }
 
-type Reader func(ctx context.Context, name string, size int, r io.Reader) (io.Reader, error)
+type Reader func(ctx context.Context, name string, size uint64, r io.Reader) (io.Reader, error)
 
 func RegisterDecryptionReader(extension FileFormat, decryptionReader Reader) {
 	if _, dup := registry.LoadOrStore(extension, decryptionReader); dup {
