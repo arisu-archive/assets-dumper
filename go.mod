@@ -12,7 +12,7 @@ require (
 	github.com/bmatcuk/doublestar/v4 v4.8.1
 	github.com/go-resty/resty/v2 v2.16.0
 	github.com/google/uuid v1.6.0
-	github.com/mattn/go-sqlite3 v1.14.24
+	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/onsi/ginkgo/v2 v2.23.0
 	github.com/onsi/gomega v1.36.2
 	github.com/spf13/cobra v1.8.1
