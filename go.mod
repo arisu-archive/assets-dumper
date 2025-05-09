@@ -10,7 +10,7 @@ require (
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319103816-88c50717e9f2
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
 	github.com/bmatcuk/doublestar/v4 v4.8.1
-	github.com/go-resty/resty/v2 v2.16.0
+	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/onsi/ginkgo/v2 v2.23.0
