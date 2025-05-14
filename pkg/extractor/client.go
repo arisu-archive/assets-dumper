@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/arisu-archive/assets-dumper/pkg/decryption"
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
 )
 
 type Client interface {
@@ -18,8 +19,8 @@ type client struct {
 	decryptor decryption.Client
 }
 
-func New() Client {
-	return NewWithDecryptor(decryption.New())
+func New(server resourceapi.Server) Client {
+	return NewWithDecryptor(decryption.New(server))
 }
 
 func NewWithDecryptor(d decryption.Client) Client {

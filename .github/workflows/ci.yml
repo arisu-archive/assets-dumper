@@ -27,6 +27,7 @@ jobs:
       with:
         ssh-private-key: |
           ${{secrets.ARONA_FLATBUFFERS_PRIVATE_KEY}}
+          ${{secrets.PLANA_FLATBUFFERS_PRIVATE_KEY}}
           ${{secrets.ARONA_FBS_UTILS_PRIVATE_KEY}}
 
     - name: Cache Go modules
@@ -45,6 +46,8 @@ jobs:
         make mocks
 
     - name: Run tests
+      env:
+        GOPRIVATE: github.com/arisu-archive
       run: |
         make test
 
