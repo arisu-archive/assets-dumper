@@ -16,15 +16,17 @@ type Client interface {
 }
 
 type client struct {
+	server    resourceapi.Server
 	decryptor decryption.Client
 }
 
 func New(server resourceapi.Server) Client {
-	return NewWithDecryptor(decryption.New(server))
+	return NewWithDecryptor(server, decryption.New(server))
 }
 
-func NewWithDecryptor(d decryption.Client) Client {
+func NewWithDecryptor(server resourceapi.Server, d decryption.Client) Client {
 	return &client{
+		server:    server,
 		decryptor: d,
 	}
 }
@@ -38,7 +40,7 @@ func (c *client) Extract(ctx context.Context, inputPath, outputPath string) erro
 
 	// Process each file based on the file extension
 	for _, file := range files {
-		extractor := extractor(FileFormat(filepath.Ext(file)))
+		extractor := extractor(c.server, FileFormat(filepath.Ext(file)))
 		if extractor == nil {
 			slog.WarnContext(
 				ctx,

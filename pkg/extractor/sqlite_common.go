@@ -10,24 +10,22 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/arisu-archive/arona-flatbuffers/go/excel"
-
 	_ "github.com/mattn/go-sqlite3" // sqlite3 driver.
 )
 
-func sqliteExtractor(ctx context.Context, inputPath string) (*Result, error) {
-	db, err := openDatabase(inputPath)
+func sqliteExtractorCommon(ctx context.Context, provider ExcelProvider, inputPath string) (*Result, error) {
+	db, err := openSqliteDatabase(inputPath)
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
 
-	tableNames, err := getTableNames(db)
+	tableNames, err := getSqliteTableNames(db)
 	if err != nil {
 		return nil, err
 	}
 
-	files, err := processAllTables(ctx, db, tableNames)
+	files, err := processAllTablesCommon(ctx, provider, db, tableNames)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +39,7 @@ func sqliteExtractor(ctx context.Context, inputPath string) (*Result, error) {
 	}, nil
 }
 
-func openDatabase(path string) (*sql.DB, error) {
+func openSqliteDatabase(path string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open sqlite database: %w", err)
@@ -49,7 +47,7 @@ func openDatabase(path string) (*sql.DB, error) {
 	return db, nil
 }
 
-func getTableNames(db *sql.DB) ([]string, error) {
+func getSqliteTableNames(db *sql.DB) ([]string, error) {
 	tblRows, err := db.Query("SELECT name FROM sqlite_master WHERE type='table'")
 	if err != nil {
 		return nil, fmt.Errorf("failed to query tables: %w", err)
@@ -72,11 +70,11 @@ func getTableNames(db *sql.DB) ([]string, error) {
 	return tableNames, nil
 }
 
-func processAllTables(ctx context.Context, db *sql.DB, tableNames []string) ([]ExtractedFile, error) {
+func processAllTablesCommon(ctx context.Context, provider ExcelProvider, db *sql.DB, tableNames []string) ([]ExtractedFile, error) {
 	files := make([]ExtractedFile, 0, len(tableNames))
 
 	for _, name := range tableNames {
-		file, err := processTable(ctx, db, name)
+		file, err := processTableCommon(ctx, provider, db, name)
 		if err != nil {
 			return nil, err
 		}
@@ -89,7 +87,7 @@ func processAllTables(ctx context.Context, db *sql.DB, tableNames []string) ([]E
 	return files, nil
 }
 
-func processTable(ctx context.Context, db *sql.DB, tableName string) (*ExtractedFile, error) {
+func processTableCommon(ctx context.Context, provider ExcelProvider, db *sql.DB, tableName string) (*ExtractedFile, error) {
 	slog.DebugContext(ctx, "Table", "name", strings.TrimSuffix(tableName, "DBSchema"))
 
 	// Some tables contains underscore, and our mapping is from the actual struct name.
@@ -102,7 +100,7 @@ func processTable(ctx context.Context, db *sql.DB, tableName string) (*Extracted
 	}
 	defer rows.Close()
 
-	schemaData, err := extractTableData(ctx, rows, flatbufferName)
+	schemaData, err := extractTableDataCommon(ctx, provider, rows, flatbufferName)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +119,7 @@ func processTable(ctx context.Context, db *sql.DB, tableName string) (*Extracted
 	}, nil
 }
 
-func extractTableData(ctx context.Context, rows *sql.Rows, flatbufferName string) ([]any, error) {
+func extractTableDataCommon(ctx context.Context, provider ExcelProvider, rows *sql.Rows, flatbufferName string) ([]any, error) {
 	var schemaData []any
 
 	for rows.Next() {
@@ -130,7 +128,7 @@ func extractTableData(ctx context.Context, rows *sql.Rows, flatbufferName string
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}
 
-		t := excel.GetFlatDataByName(strings.ToLower(flatbufferName))
+		t := provider.GetExcelByName(strings.ToLower(flatbufferName))
 		if t == nil {
 			slog.WarnContext(ctx, "Table not found", "name", flatbufferName)
 			continue
