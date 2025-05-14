@@ -6,9 +6,10 @@ toolchain go1.24.3
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
-	github.com/arisu-archive/arona-flatbuffers v0.0.12-0.20250514124440-ebb248bc3f71
+	github.com/arisu-archive/arona-flatbuffers v0.1.1
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250319110048-96c9d6738543
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
+	github.com/arisu-archive/plana-flatbuffers v0.1.0
 	github.com/bmatcuk/doublestar/v4 v4.8.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0
@@ -27,7 +28,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/google/flatbuffers v24.3.25+incompatible // indirect
+	github.com/google/flatbuffers v25.2.10+incompatible // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/pprof v0.0.0-20241210010833-40e02aabc2ad // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

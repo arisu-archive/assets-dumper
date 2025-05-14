@@ -11,13 +11,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/arisu-archive/arona-flatbuffers/go/flatdata"
-
 	fbsutils "github.com/arisu-archive/bluearchive-fbs-utils"
 )
 
-func flatdataReader(ctx context.Context, name string, size uint64, r io.Reader) (io.Reader, error) {
-	t := flatdata.GetFlatDataByName(strings.ToLower(strings.TrimSuffix(name, filepath.Ext(name))))
+// FlatDataProvider defines the interface for getting flatdata by name
+type FlatDataProvider interface {
+	GetFlatDataByName(name string) fbsutils.FlatData
+}
+
+func flatdataReaderCommon(ctx context.Context, provider FlatDataProvider, name string, size uint64, r io.Reader) (io.Reader, error) {
+	t := provider.GetFlatDataByName(strings.ToLower(strings.TrimSuffix(name, filepath.Ext(name))))
 	if t == nil {
 		slog.WarnContext(ctx, "failed to get table by string", "name", name)
 		return r, nil
