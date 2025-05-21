@@ -12,6 +12,8 @@ github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e h1:QLQ
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e/go.mod h1:44G892c0qlQbpqJWj/P94ik+a7POVCm0f4PQAuENm58=
 github.com/arisu-archive/plana-flatbuffers v0.1.0 h1:z7fC9+RLFuQjB9LwKH+gg9G7FpzcwWjafX12OxKuNkw=
 github.com/arisu-archive/plana-flatbuffers v0.1.0/go.mod h1:1Ks0ObaLF5nkVf8s04FIBxhvqSHvJ8EvnFkfxt7CtmE=
+github.com/arisu-archive/plana-flatbuffers v0.2.0 h1:/J5AyiCqi/+GrEfJjAw1S7Pr4/ixwJ+4vtPd4oz1km0=
+github.com/arisu-archive/plana-flatbuffers v0.2.0/go.mod h1:F9almB78cGCGLNLHq/KTcb5Rr32Srx9ha4GcByneaq0=
 github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=
 github.com/bmatcuk/doublestar/v4 v4.8.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
