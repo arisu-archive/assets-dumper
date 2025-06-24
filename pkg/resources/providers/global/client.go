@@ -31,6 +31,8 @@ type Client struct {
 	resourceURI  string
 	version      string
 	patchVersion int64
+	patchPath    string
+	patchURI     string
 }
 
 func NewClient(client *resty.Client) *Client {
@@ -54,6 +56,7 @@ func (c *Client) WithVersion(version string) resourceapi.Client {
 	c.resourceURI = ""
 	c.resourcePath = ""
 	c.patchVersion = 0
+	c.patchPath = ""
 	return c
 }
 
@@ -122,6 +125,20 @@ func (c *Client) DownloadResource(ctx context.Context, resourcePath string) (io.
 	return resp.RawBody(), resp.RawResponse.ContentLength, nil
 }
 
+func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error) {
+	_, err := c.getResourceURI(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to get resource path: %w", err)
+	}
+	fullPath := fmt.Sprintf("%s/%s", c.patchURI, strings.TrimPrefix(patchPath, "/"))
+	slog.DebugContext(ctx, "DownloadPatch", "fullPath", fullPath)
+	resp, err := c.client.R().SetDoNotParseResponse(true).SetContext(ctx).Get(fullPath)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to download patch: %w", err)
+	}
+	return resp.RawBody(), resp.RawResponse.ContentLength, nil
+}
+
 func (c *Client) DownloadResourceToFile(ctx context.Context, resourcePath string) ([]byte, error) {
 	resourceURI, err := c.getResourceURI(ctx)
 	if err != nil {
@@ -157,6 +174,30 @@ func (c *Client) GetPatchVersion(ctx context.Context) (string, error) {
 	}
 
 	return strconv.FormatInt(c.patchVersion, 10), nil
+}
+
+func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
+	if _, err := c.getResourceURI(ctx); err != nil {
+		return nil, fmt.Errorf("failed to get resource path: %w", err)
+	}
+
+	resp, err := c.client.R().SetContext(ctx).Get(c.patchURI)
+	if err != nil {
+		return nil, fmt.Errorf("failed to download patch: %w", err)
+	}
+	slog.DebugContext(ctx, "listPatches", "resp", resp.Body())
+	var result []string
+	err = json.Unmarshal(resp.Body(), &result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
+	}
+	patches := []resourceapi.Resource{}
+	for _, patch := range result {
+		patches = append(patches, resourceapi.Resource{
+			Path: patch,
+		})
+	}
+	return patches, nil
 }
 
 func (c *Client) IsResourceCached(_ context.Context, resource resourceapi.Resource, fullPath string) bool {
@@ -255,6 +296,19 @@ func (c *Client) getResourceURI(ctx context.Context) (string, error) {
 	parsedURL.Path = dir
 	c.resourcePath = versionCheckResp.Patch.ResourcePath
 	c.patchVersion = versionCheckResp.Patch.PatchVersion
+	// Get the value of the map[string]string (bdiffPath is the map and we dont know the key)
+	for _, v := range versionCheckResp.Patch.BdiffPath[0] {
+		parsedPatchURL, err := url.Parse(v)
+		if err != nil {
+			return "", fmt.Errorf("failed to parse URL: %w", err)
+		}
+		c.patchPath = parsedPatchURL.Path
+		dir, _ := path.Split(parsedPatchURL.Path)
+		parsedPatchURL.Path = dir
+		c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
+		break
+	}
+
 	c.resourceURI = strings.TrimSuffix(parsedURL.String(), "/")
 	return c.resourceURI, nil
 }

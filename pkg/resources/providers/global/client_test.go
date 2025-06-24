@@ -111,6 +111,11 @@ var _ = Describe("Global Client", func() {
 				Patch: global.Patch{
 					PatchVersion: 123,
 					ResourcePath: server.URL() + "/resources.json",
+					BdiffPath: []map[string]string{
+						{
+							"122": server.URL() + "/122/bdiff-data.json",
+						},
+					},
 				},
 			}
 			versionCheckJSON, _ := json.Marshal(versionCheckResponse)
@@ -164,6 +169,11 @@ var _ = Describe("Global Client", func() {
 				Patch: global.Patch{
 					PatchVersion: 123,
 					ResourcePath: server.URL() + "/resources.json",
+					BdiffPath: []map[string]string{
+						{
+							"122": server.URL() + "/122/bdiff-data.json",
+						},
+					},
 				},
 			}
 			versionCheckJSON, _ := json.Marshal(versionCheckResponse)
@@ -191,6 +201,55 @@ var _ = Describe("Global Client", func() {
 			)
 
 			reader, size, err := client.DownloadResource(ctx, "images/icon1.png")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(len(resourceContent))))
+			data, err := io.ReadAll(reader)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(data).To(Equal(resourceContent))
+		})
+	})
+
+	Describe("DownloadPatch", func() {
+		It("should download patch correctly", func() {
+			// Mock version check response
+			versionCheckResponse := global.VersionCheckResponse{
+				APIVersion:         "1.1",
+				LatestBuildVersion: "1.2.3",
+				Patch: global.Patch{
+					PatchVersion: 123,
+					ResourcePath: server.URL() + "/resources.json",
+					BdiffPath: []map[string]string{
+						{
+							"122": server.URL() + "/122/bdiff-data.json",
+						},
+					},
+				},
+			}
+			versionCheckJSON, _ := json.Marshal(versionCheckResponse)
+
+			// Resource content
+			resourceContent := []byte("resource data")
+
+			// Set up server responses
+			server.AppendHandlers(
+				// Version check
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/com.nexon.bluearchive/version.txt"),
+					ghttp.RespondWith(http.StatusOK, "1.2.3"),
+				),
+				// Version check API call
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("POST", "/patch/v1.1/version-check"),
+					ghttp.RespondWith(http.StatusOK, string(versionCheckJSON)),
+				),
+				// Resource download
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/122/images/icon1.png"),
+					ghttp.RespondWith(http.StatusOK, resourceContent),
+				),
+			)
+
+			reader, size, err := client.DownloadPatch(ctx, "images/icon1.png")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(size).To(Equal(int64(len(resourceContent))))
 			data, err := io.ReadAll(reader)

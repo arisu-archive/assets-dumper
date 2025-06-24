@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"hash/crc32"
 	"io"
@@ -95,6 +96,14 @@ func (c *Client) ListResources(ctx context.Context, filter string) ([]resourceap
 	}
 
 	return filteredResources, nil
+}
+
+func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error) {
+	return nil, 0, errors.New("not implemented")
+}
+
+func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
+	return nil, errors.New("not implemented")
 }
 
 func (c *Client) GetVersion(ctx context.Context) (string, error) {

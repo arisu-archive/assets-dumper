@@ -7,6 +7,8 @@ import (
 
 type Client interface {
 	DownloadResource(ctx context.Context, resourcePath string) (io.ReadCloser, int64, error)
+	DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error)
+	ListPatches(ctx context.Context, filter string) ([]Resource, error)
 	ListResources(ctx context.Context, filter string) ([]Resource, error)
 	GetCatalog(ctx context.Context, catalogType CatalogType) (any, error)
 	GetVersion(ctx context.Context) (string, error)
