@@ -186,15 +186,17 @@ func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.
 		return nil, fmt.Errorf("failed to download patch: %w", err)
 	}
 	slog.DebugContext(ctx, "listPatches", "resp", resp.Body())
-	var result []string
+	var result ResourceData
 	err = json.Unmarshal(resp.Body(), &result)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 	patches := []resourceapi.Resource{}
-	for _, patch := range result {
+	for _, patch := range result.Resources {
 		patches = append(patches, resourceapi.Resource{
-			Path: patch,
+			Path: patch.ResourcePath,
+			Size: patch.ResourceSize,
+			Hash: patch.ResourceHash,
 		})
 	}
 	return patches, nil
