@@ -181,7 +181,7 @@ func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.
 		return nil, fmt.Errorf("failed to get resource path: %w", err)
 	}
 
-	resp, err := c.client.R().SetContext(ctx).Get(c.patchURI)
+	resp, err := c.client.R().SetContext(ctx).Get(c.patchPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to download patch: %w", err)
 	}
@@ -302,7 +302,7 @@ func (c *Client) getResourceURI(ctx context.Context) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("failed to parse URL: %w", err)
 		}
-		c.patchPath = parsedPatchURL.Path
+		c.patchPath = v
 		dir, _ := path.Split(parsedPatchURL.Path)
 		parsedPatchURL.Path = dir
 		c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
