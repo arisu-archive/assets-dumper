@@ -2,7 +2,7 @@ module github.com/arisu-archive/assets-dumper
 
 go 1.23.0
 
-toolchain go1.24.3
+toolchain go1.24.5
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
