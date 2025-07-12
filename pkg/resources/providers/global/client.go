@@ -127,7 +127,7 @@ func (c *Client) DownloadResource(ctx context.Context, resourcePath string) (io.
 }
 
 func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error) {
-	_, err := c.getResourceURI(ctx)
+	_, err := c.getPatchURI(ctx)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to get resource path: %w", err)
 	}
@@ -184,18 +184,19 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 }
 
 func (c *Client) GetPatchVersion(ctx context.Context) (string, error) {
-	if _, err := c.getResourceURI(ctx); err != nil {
-		return "", fmt.Errorf("failed to get resource path: %w", err)
+	_, err := c.getPatchURI(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to get patch path: %w", err)
 	}
 
 	return strconv.FormatInt(c.patchVersion, 10), nil
 }
 
 func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
-	if _, err := c.getResourceURI(ctx); err != nil {
-		return nil, fmt.Errorf("failed to get resource path: %w", err)
+	_, err := c.getPatchURI(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get patch path: %w", err)
 	}
-
 	resp, err := c.client.R().SetContext(ctx).Get(c.patchPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to download patch: %w", err)
@@ -328,4 +329,48 @@ func (c *Client) getResourceURI(ctx context.Context) (string, error) {
 
 	c.resourceURI = strings.TrimSuffix(parsedURL.String(), "/")
 	return c.resourceURI, nil
+}
+
+func (c *Client) getPatchURI(ctx context.Context) (string, error) {
+	versionCheckResp, err := c.versionCheck(ctx)
+	if err != nil {
+		return "", err
+	}
+	parsedURL, err := url.Parse(versionCheckResp.Patch.ResourcePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse URL: %w", err)
+	}
+	slog.DebugContext(ctx, "getPatchURI", "parsedURL", parsedURL)
+	// Remove the filename from the path
+	dir, _ := path.Split(parsedURL.Path)
+	parsedURL.Path = dir
+	if c.patchVersion == 0 {
+		for _, v := range versionCheckResp.Patch.BdiffPath[0] {
+			parsedPatchURL, err := url.Parse(v)
+			if err != nil {
+				return "", fmt.Errorf("failed to parse URL: %w", err)
+			}
+			c.patchPath = v
+			dir, _ := path.Split(parsedPatchURL.Path)
+			parsedPatchURL.Path = dir
+			c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
+			return c.patchURI, nil
+		}
+	}
+	// Get the value of the map[string]string (bdiffPath is the map and we dont know the key)
+	for _, bdiffPatchMap := range versionCheckResp.Patch.BdiffPath {
+		if patchURL, ok := bdiffPatchMap[strconv.FormatInt(c.patchVersion, 10)]; ok {
+			parsedPatchURL, err := url.Parse(patchURL)
+			if err != nil {
+				return "", fmt.Errorf("failed to parse URL: %w", err)
+			}
+			c.patchPath = patchURL
+			dir, _ := path.Split(parsedPatchURL.Path)
+			parsedPatchURL.Path = dir
+			c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
+			return c.patchURI, nil
+		}
+	}
+
+	return "", fmt.Errorf("patch version not found")
 }
