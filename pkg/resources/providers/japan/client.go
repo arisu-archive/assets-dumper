@@ -47,6 +47,10 @@ func (c *Client) WithVersion(version string) resourceapi.Client {
 	return c
 }
 
+func (c *Client) WithPatchVersion(_ int64) resourceapi.Client {
+	return c
+}
+
 func (c *Client) GetCatalog(ctx context.Context, catalogType resourceapi.CatalogType) (any, error) {
 	switch catalogType {
 	case resourceapi.CatalogTypeTableBundle:

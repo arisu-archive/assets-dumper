@@ -53,10 +53,11 @@ func NewClientWithRetriever(client *resty.Client, retriever *CatalogRetriever) *
 
 func (c *Client) WithVersion(version string) resourceapi.Client {
 	c.version = version
-	c.resourceURI = ""
-	c.resourcePath = ""
-	c.patchVersion = 0
-	c.patchPath = ""
+	return c
+}
+
+func (c *Client) WithPatchVersion(patchVersion int64) resourceapi.Client {
+	c.patchVersion = patchVersion
 	return c
 }
 
