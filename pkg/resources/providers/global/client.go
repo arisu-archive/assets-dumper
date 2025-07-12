@@ -139,6 +139,20 @@ func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCl
 	return resp.RawBody(), resp.RawResponse.ContentLength, nil
 }
 
+func (c *Client) DownloadApplication(ctx context.Context) (io.ReadCloser, int64, error) {
+	version, err := c.GetVersion(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to get version: %w", err)
+	}
+	fullPath := fmt.Sprintf(APKTemplateURL, version)
+	slog.DebugContext(ctx, "DownloadApplication", "fullPath", fullPath)
+	resp, err := c.client.R().SetDoNotParseResponse(true).SetContext(ctx).Get(fullPath)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to download application: %w", err)
+	}
+	return resp.RawBody(), resp.RawResponse.ContentLength, nil
+}
+
 func (c *Client) DownloadResourceToFile(ctx context.Context, resourcePath string) ([]byte, error) {
 	resourceURI, err := c.getResourceURI(ctx)
 	if err != nil {

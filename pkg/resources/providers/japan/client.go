@@ -77,6 +77,20 @@ func (c *Client) DownloadResource(ctx context.Context, filePath string) (io.Read
 	return resp.RawBody(), resp.RawResponse.ContentLength, nil
 }
 
+func (c *Client) DownloadApplication(ctx context.Context) (io.ReadCloser, int64, error) {
+	version, err := c.GetVersion(ctx)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to get version: %w", err)
+	}
+	fullPath := fmt.Sprintf(APKTemplateURL, version)
+	slog.DebugContext(ctx, "DownloadApplication", "fullPath", fullPath)
+	resp, err := c.client.R().SetDoNotParseResponse(true).SetContext(ctx).Get(fullPath)
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to download application: %w", err)
+	}
+	return resp.RawBody(), resp.RawResponse.ContentLength, nil
+}
+
 func (c *Client) ListResources(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
 	// First, fetch and parse all catalog files
 	resources, err := c.retriever.CollectAllResources(ctx)
