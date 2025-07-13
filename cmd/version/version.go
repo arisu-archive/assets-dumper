@@ -47,14 +47,14 @@ func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("failed to create client: %w", err)
 	}
 
-	version, err := client.GetVersion(cobraCmd.Context())
+	version, err := client.GetLatestVersion(cobraCmd.Context())
 	if err != nil {
 		return fmt.Errorf("failed to get version: %w", err)
 	}
 	slog.Info("latest version", "version", version)
 	patchVersion := ""
 	if !c.opts.withoutPatch {
-		patchVersion, err = client.GetPatchVersion(cobraCmd.Context())
+		patchVersion, err = client.GetLatestPatchVersion(cobraCmd.Context())
 		if err != nil {
 			return fmt.Errorf("failed to get patch version: %w", err)
 		}

@@ -141,9 +141,13 @@ func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCl
 }
 
 func (c *Client) DownloadApplication(ctx context.Context) (io.ReadCloser, int64, error) {
-	version, err := c.GetVersion(ctx)
-	if err != nil {
-		return nil, 0, fmt.Errorf("failed to get version: %w", err)
+	version := c.version
+	if version == "" {
+		var err error
+		version, err = c.GetLatestVersion(ctx)
+		if err != nil {
+			return nil, 0, fmt.Errorf("failed to get version: %w", err)
+		}
 	}
 	fullPath := fmt.Sprintf(APKTemplateURL, version)
 	slog.DebugContext(ctx, "DownloadApplication", "fullPath", fullPath)
@@ -169,12 +173,7 @@ func (c *Client) DownloadResourceToFile(ctx context.Context, resourcePath string
 	return resp.Body(), nil
 }
 
-func (c *Client) GetVersion(ctx context.Context) (string, error) {
-	// Return the pass-in version if it's not empty.
-	if c.version != "" {
-		return c.version, nil
-	}
-
+func (c *Client) GetLatestVersion(ctx context.Context) (string, error) {
 	resp, err := c.client.R().SetContext(ctx).Get(GetVersionURL)
 	if err != nil || resp.IsError() {
 		return "", fmt.Errorf("failed to get version: %w", err)
@@ -183,13 +182,12 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 	return strings.TrimSpace(string(resp.Body())), nil
 }
 
-func (c *Client) GetPatchVersion(ctx context.Context) (string, error) {
-	_, err := c.getPatchURI(ctx)
+func (c *Client) GetLatestPatchVersion(ctx context.Context) (string, error) {
+	versionCheckResp, err := c.versionCheck(ctx)
 	if err != nil {
-		return "", fmt.Errorf("failed to get patch path: %w", err)
+		return "", err
 	}
-
-	return strconv.FormatInt(c.patchVersion, 10), nil
+	return strconv.FormatInt(versionCheckResp.Patch.PatchVersion, 10), nil
 }
 
 func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
@@ -249,9 +247,13 @@ func (*Client) ComputeHash(fullPath string) (string, error) {
 }
 
 func (c *Client) versionCheck(ctx context.Context) (*VersionCheckResponse, error) {
-	buildVersion, err := c.GetVersion(ctx)
-	if err != nil {
-		return nil, err
+	buildVersion := c.version
+	if buildVersion == "" {
+		var err error
+		buildVersion, err = c.GetLatestVersion(ctx)
+		if err != nil {
+			return nil, err
+		}
 	}
 	buildNumber, err := semver.NewVersion(buildVersion)
 	if err != nil {
@@ -313,20 +315,6 @@ func (c *Client) getResourceURI(ctx context.Context) (string, error) {
 	dir, _ := path.Split(parsedURL.Path)
 	parsedURL.Path = dir
 	c.resourcePath = versionCheckResp.Patch.ResourcePath
-	c.patchVersion = versionCheckResp.Patch.PatchVersion
-	// Get the value of the map[string]string (bdiffPath is the map and we dont know the key)
-	for _, v := range versionCheckResp.Patch.BdiffPath[0] {
-		parsedPatchURL, err := url.Parse(v)
-		if err != nil {
-			return "", fmt.Errorf("failed to parse URL: %w", err)
-		}
-		c.patchPath = v
-		dir, _ := path.Split(parsedPatchURL.Path)
-		parsedPatchURL.Path = dir
-		c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
-		break
-	}
-
 	c.resourceURI = strings.TrimSuffix(parsedURL.String(), "/")
 	return c.resourceURI, nil
 }
@@ -345,6 +333,7 @@ func (c *Client) getPatchURI(ctx context.Context) (string, error) {
 	dir, _ := path.Split(parsedURL.Path)
 	parsedURL.Path = dir
 	if c.patchVersion == 0 {
+		c.patchVersion = versionCheckResp.Patch.PatchVersion
 		for _, v := range versionCheckResp.Patch.BdiffPath[0] {
 			parsedPatchURL, err := url.Parse(v)
 			if err != nil {

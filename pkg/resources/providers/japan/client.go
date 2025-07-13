@@ -82,7 +82,7 @@ func (c *Client) DownloadResource(ctx context.Context, filePath string) (io.Read
 }
 
 func (c *Client) DownloadApplication(ctx context.Context) (io.ReadCloser, int64, error) {
-	version, err := c.GetVersion(ctx)
+	version, err := c.GetLatestVersion(ctx)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to get version: %w", err)
 	}
@@ -124,7 +124,7 @@ func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.
 	return nil, errors.New("not implemented")
 }
 
-func (c *Client) GetVersion(ctx context.Context) (string, error) {
+func (c *Client) GetLatestVersion(ctx context.Context) (string, error) {
 	resp, err := c.client.R().SetContext(ctx).Get(GetClientVersionURL)
 	if err != nil || resp.IsError() {
 		return "", fmt.Errorf("failed to get version: %w", err)
@@ -132,7 +132,7 @@ func (c *Client) GetVersion(ctx context.Context) (string, error) {
 	return string(resp.Body()), nil
 }
 
-func (c *Client) GetPatchVersion(ctx context.Context) (string, error) {
+func (c *Client) GetLatestPatchVersion(ctx context.Context) (string, error) {
 	// Get the patch version from the AddressablesCatalogURLRoot
 	rootURL, err := c.getResourcePath(ctx)
 	if err != nil {
@@ -230,7 +230,7 @@ func (c *Client) getResourcePath(ctx context.Context) (string, error) {
 		return c.resourcePath, nil
 	}
 
-	version, err := c.GetVersion(ctx)
+	version, err := c.GetLatestVersion(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to get version: %w", err)
 	}

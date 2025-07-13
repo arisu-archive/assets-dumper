@@ -12,8 +12,8 @@ type Client interface {
 	ListPatches(ctx context.Context, filter string) ([]Resource, error)
 	ListResources(ctx context.Context, filter string) ([]Resource, error)
 	GetCatalog(ctx context.Context, catalogType CatalogType) (any, error)
-	GetVersion(ctx context.Context) (string, error)
-	GetPatchVersion(ctx context.Context) (string, error)
+	GetLatestVersion(ctx context.Context) (string, error)
+	GetLatestPatchVersion(ctx context.Context) (string, error)
 	IsResourceCached(ctx context.Context, resource Resource, fullPath string) bool
 	WithVersion(version string) Client
 	WithPatchVersion(patchVersion int64) Client
