@@ -20,6 +20,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
+	"github.com/arisu-archive/assets-dumper/pkg/resources/providers/shared"
 )
 
 var _ resourceapi.Client = (*Client)(nil)
@@ -257,7 +258,7 @@ func (c *Client) versionCheck(ctx context.Context) (*VersionCheckResponse, error
 	}
 	buildNumber, err := semver.NewVersion(buildVersion)
 	if err != nil {
-		return nil, ErrInvalidBuildVersion
+		return nil, shared.ErrInvalidBuildVersion
 	}
 
 	// country := Locale.getDefault().getCountry()
@@ -361,5 +362,5 @@ func (c *Client) getPatchURI(ctx context.Context) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("patch version not found")
+	return "", shared.ErrPatchVersionNotFound
 }

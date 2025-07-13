@@ -84,7 +84,7 @@ var _ = Describe("Global Client", func() {
 				),
 			)
 
-			version, err := client.GetVersion(ctx)
+			version, err := client.GetLatestVersion(ctx)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(version).To(Equal("1.2.3"))
 		})
@@ -97,7 +97,7 @@ var _ = Describe("Global Client", func() {
 				),
 			)
 
-			_, err := client.GetVersion(ctx)
+			_, err := client.GetLatestVersion(ctx)
 			Expect(err).To(HaveOccurred())
 		})
 	})
