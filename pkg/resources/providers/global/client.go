@@ -208,12 +208,22 @@ func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.
 	}
 	patches := []resourceapi.Resource{}
 	for _, patch := range result.Resources {
-		patches = append(patches, resourceapi.Resource{
-			Path: patch.ResourcePath,
-			Size: patch.ResourceSize,
-			Hash: patch.ResourceHash,
-		})
+		slog.DebugContext(ctx, "listPatches", "resource", patch.ResourcePath)
+		// Given a list of folder paths, we need to filter out the ones that don't match the filter using glob
+		matches, matchErr := doublestar.Match(filter, patch.ResourcePath)
+		if matchErr != nil {
+			slog.ErrorContext(ctx, "failed to match patch", "error", matchErr)
+			continue
+		}
+		if matches {
+			patches = append(patches, resourceapi.Resource{
+				Path: patch.ResourcePath,
+				Size: patch.ResourceSize,
+				Hash: patch.ResourceHash,
+			})
+		}
 	}
+
 	return patches, nil
 }
 
