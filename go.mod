@@ -18,7 +18,7 @@ require (
 	github.com/onsi/gomega v1.37.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	github.com/vbauerster/mpb/v8 v8.10.1
+	github.com/vbauerster/mpb/v8 v8.10.2
 	golang.org/x/sync v0.14.0
 )
 
