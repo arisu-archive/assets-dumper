@@ -11,6 +11,8 @@ BINARY_NAME := asset-dumper
 prepare:
 	mkdir -p ${TMP_DIR}/bin
 	go env -w CGO_ENABLED=1
+	go env -w GOPRIVATE=github.com/arisu-archive/*
+	git config --global url."git@github.com:".insteadOf "https://github.com/"
 	go install github.com/onsi/ginkgo/v2/ginkgo@v2.22.2
 	go install github.com/vektra/mockery/v2@v2.53.0
 

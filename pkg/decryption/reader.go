@@ -11,7 +11,7 @@ type reader struct {
 	key []byte
 }
 
-func newXorReader(r io.Reader, key []byte) io.Reader {
+func NewXorReader(r io.Reader, key []byte) io.Reader {
 	return &reader{r: r, key: key}
 }
 

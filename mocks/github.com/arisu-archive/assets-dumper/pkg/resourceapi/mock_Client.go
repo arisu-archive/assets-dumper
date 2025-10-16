@@ -24,6 +24,71 @@ func (_m *MockClient) EXPECT() *MockClient_Expecter {
 	return &MockClient_Expecter{mock: &_m.Mock}
 }
 
+// DownloadApplication provides a mock function with given fields: ctx
+func (_m *MockClient) DownloadApplication(ctx context.Context) (io.ReadCloser, int64, error) {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DownloadApplication")
+	}
+
+	var r0 io.ReadCloser
+	var r1 int64
+	var r2 error
+	if rf, ok := ret.Get(0).(func(context.Context) (io.ReadCloser, int64, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context) io.ReadCloser); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(io.ReadCloser)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context) int64); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Get(1).(int64)
+	}
+
+	if rf, ok := ret.Get(2).(func(context.Context) error); ok {
+		r2 = rf(ctx)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
+}
+
+// MockClient_DownloadApplication_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DownloadApplication'
+type MockClient_DownloadApplication_Call struct {
+	*mock.Call
+}
+
+// DownloadApplication is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockClient_Expecter) DownloadApplication(ctx interface{}) *MockClient_DownloadApplication_Call {
+	return &MockClient_DownloadApplication_Call{Call: _e.mock.On("DownloadApplication", ctx)}
+}
+
+func (_c *MockClient_DownloadApplication_Call) Run(run func(ctx context.Context)) *MockClient_DownloadApplication_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockClient_DownloadApplication_Call) Return(_a0 io.ReadCloser, _a1 int64, _a2 error) *MockClient_DownloadApplication_Call {
+	_c.Call.Return(_a0, _a1, _a2)
+	return _c
+}
+
+func (_c *MockClient_DownloadApplication_Call) RunAndReturn(run func(context.Context) (io.ReadCloser, int64, error)) *MockClient_DownloadApplication_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // DownloadPatch provides a mock function with given fields: ctx, patchPath
 func (_m *MockClient) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error) {
 	ret := _m.Called(ctx, patchPath)
@@ -215,12 +280,12 @@ func (_c *MockClient_GetCatalog_Call) RunAndReturn(run func(context.Context, res
 	return _c
 }
 
-// GetPatchVersion provides a mock function with given fields: ctx
-func (_m *MockClient) GetPatchVersion(ctx context.Context) (string, error) {
+// GetLatestPatchVersion provides a mock function with given fields: ctx
+func (_m *MockClient) GetLatestPatchVersion(ctx context.Context) (string, error) {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetPatchVersion")
+		panic("no return value specified for GetLatestPatchVersion")
 	}
 
 	var r0 string
@@ -243,40 +308,40 @@ func (_m *MockClient) GetPatchVersion(ctx context.Context) (string, error) {
 	return r0, r1
 }
 
-// MockClient_GetPatchVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPatchVersion'
-type MockClient_GetPatchVersion_Call struct {
+// MockClient_GetLatestPatchVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLatestPatchVersion'
+type MockClient_GetLatestPatchVersion_Call struct {
 	*mock.Call
 }
 
-// GetPatchVersion is a helper method to define mock.On call
+// GetLatestPatchVersion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockClient_Expecter) GetPatchVersion(ctx interface{}) *MockClient_GetPatchVersion_Call {
-	return &MockClient_GetPatchVersion_Call{Call: _e.mock.On("GetPatchVersion", ctx)}
+func (_e *MockClient_Expecter) GetLatestPatchVersion(ctx interface{}) *MockClient_GetLatestPatchVersion_Call {
+	return &MockClient_GetLatestPatchVersion_Call{Call: _e.mock.On("GetLatestPatchVersion", ctx)}
 }
 
-func (_c *MockClient_GetPatchVersion_Call) Run(run func(ctx context.Context)) *MockClient_GetPatchVersion_Call {
+func (_c *MockClient_GetLatestPatchVersion_Call) Run(run func(ctx context.Context)) *MockClient_GetLatestPatchVersion_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context))
 	})
 	return _c
 }
 
-func (_c *MockClient_GetPatchVersion_Call) Return(_a0 string, _a1 error) *MockClient_GetPatchVersion_Call {
+func (_c *MockClient_GetLatestPatchVersion_Call) Return(_a0 string, _a1 error) *MockClient_GetLatestPatchVersion_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClient_GetPatchVersion_Call) RunAndReturn(run func(context.Context) (string, error)) *MockClient_GetPatchVersion_Call {
+func (_c *MockClient_GetLatestPatchVersion_Call) RunAndReturn(run func(context.Context) (string, error)) *MockClient_GetLatestPatchVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetVersion provides a mock function with given fields: ctx
-func (_m *MockClient) GetVersion(ctx context.Context) (string, error) {
+// GetLatestVersion provides a mock function with given fields: ctx
+func (_m *MockClient) GetLatestVersion(ctx context.Context) (string, error) {
 	ret := _m.Called(ctx)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetVersion")
+		panic("no return value specified for GetLatestVersion")
 	}
 
 	var r0 string
@@ -299,30 +364,30 @@ func (_m *MockClient) GetVersion(ctx context.Context) (string, error) {
 	return r0, r1
 }
 
-// MockClient_GetVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetVersion'
-type MockClient_GetVersion_Call struct {
+// MockClient_GetLatestVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLatestVersion'
+type MockClient_GetLatestVersion_Call struct {
 	*mock.Call
 }
 
-// GetVersion is a helper method to define mock.On call
+// GetLatestVersion is a helper method to define mock.On call
 //   - ctx context.Context
-func (_e *MockClient_Expecter) GetVersion(ctx interface{}) *MockClient_GetVersion_Call {
-	return &MockClient_GetVersion_Call{Call: _e.mock.On("GetVersion", ctx)}
+func (_e *MockClient_Expecter) GetLatestVersion(ctx interface{}) *MockClient_GetLatestVersion_Call {
+	return &MockClient_GetLatestVersion_Call{Call: _e.mock.On("GetLatestVersion", ctx)}
 }
 
-func (_c *MockClient_GetVersion_Call) Run(run func(ctx context.Context)) *MockClient_GetVersion_Call {
+func (_c *MockClient_GetLatestVersion_Call) Run(run func(ctx context.Context)) *MockClient_GetLatestVersion_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context))
 	})
 	return _c
 }
 
-func (_c *MockClient_GetVersion_Call) Return(_a0 string, _a1 error) *MockClient_GetVersion_Call {
+func (_c *MockClient_GetLatestVersion_Call) Return(_a0 string, _a1 error) *MockClient_GetLatestVersion_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MockClient_GetVersion_Call) RunAndReturn(run func(context.Context) (string, error)) *MockClient_GetVersion_Call {
+func (_c *MockClient_GetLatestVersion_Call) RunAndReturn(run func(context.Context) (string, error)) *MockClient_GetLatestVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -489,6 +554,54 @@ func (_c *MockClient_ListResources_Call) Return(_a0 []resourceapi.Resource, _a1 
 }
 
 func (_c *MockClient_ListResources_Call) RunAndReturn(run func(context.Context, string) ([]resourceapi.Resource, error)) *MockClient_ListResources_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WithPatchVersion provides a mock function with given fields: patchVersion
+func (_m *MockClient) WithPatchVersion(patchVersion int64) resourceapi.Client {
+	ret := _m.Called(patchVersion)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WithPatchVersion")
+	}
+
+	var r0 resourceapi.Client
+	if rf, ok := ret.Get(0).(func(int64) resourceapi.Client); ok {
+		r0 = rf(patchVersion)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(resourceapi.Client)
+		}
+	}
+
+	return r0
+}
+
+// MockClient_WithPatchVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WithPatchVersion'
+type MockClient_WithPatchVersion_Call struct {
+	*mock.Call
+}
+
+// WithPatchVersion is a helper method to define mock.On call
+//   - patchVersion int64
+func (_e *MockClient_Expecter) WithPatchVersion(patchVersion interface{}) *MockClient_WithPatchVersion_Call {
+	return &MockClient_WithPatchVersion_Call{Call: _e.mock.On("WithPatchVersion", patchVersion)}
+}
+
+func (_c *MockClient_WithPatchVersion_Call) Run(run func(patchVersion int64)) *MockClient_WithPatchVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int64))
+	})
+	return _c
+}
+
+func (_c *MockClient_WithPatchVersion_Call) Return(_a0 resourceapi.Client) *MockClient_WithPatchVersion_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockClient_WithPatchVersion_Call) RunAndReturn(run func(int64) resourceapi.Client) *MockClient_WithPatchVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }

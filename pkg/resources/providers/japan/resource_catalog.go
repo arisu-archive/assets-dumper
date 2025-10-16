@@ -24,7 +24,16 @@ type MediaBundle struct {
 }
 
 type TableCatalog struct {
-	TableBundles map[string]TableBundle `json:"TableBundles"`
+	TableBundles   map[string]TableBundle    `json:"TableBundles"`
+	TablePatchPack map[string]TablePatchPack `json:"TablePatchPack"`
+}
+
+type TablePatchPack struct {
+	Name        string        `json:"Name"`
+	Size        int64         `json:"Size"`
+	Crc         int64         `json:"Crc"`
+	IsPrologue  bool          `json:"IsPrologue"`
+	BundleFiles []TableBundle `json:"BundleFiles"`
 }
 
 type TableBundle struct {
@@ -39,13 +48,24 @@ type TableBundle struct {
 }
 
 type BundleDownloadInfo struct {
-	Files []BundleFile `json:"BundleFiles"`
+	Milestone    string       `json:"Milestone"`
+	PatchVersion int64        `json:"PatchVersion"`
+	FullPatchPacks        []PatchPack `json:"FullPatchPacks"`
+}
+
+type PatchPack struct {
+	PackName            string `json:"PackName"`
+	PackSize            int64  `json:"PackSize"`
+	Crc             int64  `json:"Crc"`
+	IsPrologue      bool   `json:"IsPrologue"`
+	IsSplitDownload bool   `json:"IsSplitDownload"`
+	BundleFiles     []BundleFile `json:"BundleFiles"`
 }
 
 type BundleFile struct {
 	Name            string `json:"Name"`
 	Size            int64  `json:"Size"`
-	IsPrologue      bool   `json:"IsPrologue"`
 	Crc             int64  `json:"Crc"`
+	IsPrologue      bool   `json:"IsPrologue"`
 	IsSplitDownload bool   `json:"IsSplitDownload"`
 }

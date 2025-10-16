@@ -55,6 +55,10 @@ func (e *Result) Save(ctx context.Context, outputDir string) error {
 			// We need to use the flatdata struct name to derive the key
 			dr, dErr := e.decryptor.DecryptionReader(ctx, f.Name, f.Size, f.Reader)
 			if dErr != nil {
+				if errors.Is(dErr, decryption.ErrFlatbufferUnmarshalFailed) {
+					slog.WarnContext(ctx, "failed to unmarshal flatbuffer, skipping this file.", "file", f.Name, "error", dErr)
+					continue
+				}
 				slog.WarnContext(ctx, "failed to setup decryption reader", "error", dErr)
 				goto normal
 			}

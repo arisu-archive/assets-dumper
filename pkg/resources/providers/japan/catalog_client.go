@@ -96,7 +96,7 @@ func (cr *CatalogRetriever) GetMediaCatalog(ctx context.Context) (*MediaCatalog,
 }
 
 func (cr *CatalogRetriever) GetBundleDownloadInfo(ctx context.Context) (*BundleDownloadInfo, error) {
-	bundleDownloadInfoData, err := cr.getResource(ctx, "Android/bundleDownloadInfo.json")
+	bundleDownloadInfoData, err := cr.getResource(ctx, "Android_PatchPack/BundlePackingInfo.json")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get bundle download info: %w", err)
 	}
@@ -153,10 +153,10 @@ func (cr *CatalogRetriever) GetBundleResources(ctx context.Context) ([]resourcea
 	}
 
 	resources := []resourceapi.Resource{}
-	for _, resource := range bundleDownloadInfo.Files {
+	for _, resource := range bundleDownloadInfo.FullPatchPacks {
 		resources = append(resources, resourceapi.Resource{
-			Path: "Android/" + resource.Name,
-			Size: resource.Size,
+			Path: "Android_PatchPack/" + resource.PackName,
+			Size: resource.PackSize,
 			Hash: fmt.Sprintf("%x", resource.Crc),
 		})
 	}

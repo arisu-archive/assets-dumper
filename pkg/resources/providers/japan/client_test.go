@@ -91,7 +91,7 @@ var _ = Describe("Japan Client", func() {
 				),
 			)
 
-			version, err := client.GetVersion(ctx)
+			version, err := client.GetLatestVersion(ctx)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(version).To(Equal("1.2.3"))
 		})
@@ -104,7 +104,7 @@ var _ = Describe("Japan Client", func() {
 				),
 			)
 
-			_, err := client.GetVersion(ctx)
+			_, err := client.GetLatestVersion(ctx)
 			Expect(err).To(HaveOccurred())
 		})
 	})
@@ -203,9 +203,13 @@ var _ = Describe("Japan Client", func() {
 			mediaCatalogBytes, _ := memorypack.Serialize(&mediaCatalog)
 
 			bundleDownloadInfo := japan.BundleDownloadInfo{
-				Files: []japan.BundleFile{
-					{Name: "bundle1.bundle"},
-					{Name: "bundle2.bundle"},
+				FullPatchPacks: []japan.PatchPack{
+					{
+						PackName: "patchpack1",
+					},
+					{
+						PackName: "patchpack2",
+					},
 				},
 			}
 			bundleDownloadInfoJSON, _ := json.Marshal(bundleDownloadInfo)

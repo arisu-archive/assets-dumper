@@ -14,6 +14,8 @@ import (
 	fbsutils "github.com/arisu-archive/bluearchive-fbs-utils"
 )
 
+var ErrFlatbufferUnmarshalFailed = errors.New("failed to unmarshal flatbuffer")
+
 // FlatDataProvider defines the interface for getting flatdata by name
 type FlatDataProvider interface {
 	GetFlatDataByName(name string) fbsutils.FlatData
@@ -27,7 +29,7 @@ func flatdataReaderCommon(ctx context.Context, provider FlatDataProvider, name s
 	}
 	slog.DebugContext(ctx, "Decrypting flatbuffer", "name", name)
 	// Wrap it with our decryptor reader
-	xr := newXorReader(r, fbsutils.CreateKey(t.FlatDataName(), size))
+	xr := NewXorReader(r, fbsutils.CreateKey(t.FlatDataName(), size))
 	// Decrypt the flatbuffer first using the key the flatbuffer takes []byte
 	data, err := io.ReadAll(xr)
 	if err != nil && !errors.Is(err, io.EOF) {
@@ -36,12 +38,24 @@ func flatdataReaderCommon(ctx context.Context, provider FlatDataProvider, name s
 
 	slog.DebugContext(ctx, "Decrypted flatbuffer", "name", name, "size", len(data))
 
-	return convertToJSON(ctx, t, data)
+	jsonReader, err := convertToJSON(ctx, t, data)
+	if err != nil {
+		slog.WarnContext(ctx, "failed to convert to JSON", "name", name, "error", err)
+		return nil, fmt.Errorf("failed to convert to JSON: %w", err)
+	}
+	return jsonReader, nil
 }
 
-func convertToJSON(ctx context.Context, t fbsutils.FlatData, data []byte) (io.Reader, error) {
+func convertToJSON(ctx context.Context, t fbsutils.FlatData, data []byte) (out io.Reader, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			slog.WarnContext(ctx, "panic while unmarshalling flatbuffer", "name", t.FlatDataName(), "error", r)
+			err = fmt.Errorf("%w: %v", ErrFlatbufferUnmarshalFailed, r)
+			out = nil
+		}
+	}()
 	if err := t.Unmarshal(data); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal flatbuffer: %w", err)
+		return nil, fmt.Errorf("%w: %w", ErrFlatbufferUnmarshalFailed, err)
 	}
 	slog.DebugContext(ctx, "Unmarshalled flatbuffer", "name", t.FlatDataName(), "size", len(data))
 	jsonData, err := json.MarshalIndent(&t, "", "  ")
