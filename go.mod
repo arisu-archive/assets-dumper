@@ -6,10 +6,10 @@ toolchain go1.24.5
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1
-	github.com/arisu-archive/arona-flatbuffers v0.3.0
+	github.com/arisu-archive/arona-flatbuffers v0.1.2-0.20251016155935-aaedd6cf93ee
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250523141606-65e055cdb50b
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
-	github.com/arisu-archive/plana-flatbuffers v0.5.0
+	github.com/arisu-archive/plana-flatbuffers v0.3.1-0.20251016155312-fa793d487b04
 	github.com/bmatcuk/doublestar/v4 v4.8.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0
