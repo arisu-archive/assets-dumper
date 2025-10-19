@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.24.5
 
 require (
-	github.com/Masterminds/semver/v3 v3.3.1
+	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/arisu-archive/arona-flatbuffers v0.1.2-0.20251016155935-aaedd6cf93ee
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250523141606-65e055cdb50b
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
