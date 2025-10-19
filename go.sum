@@ -8,6 +8,8 @@ github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d h1:licZJFw2RwpH
 github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d/go.mod h1:asat636LX7Bqt5lYEZ27JNDcqxfjdBQuJ/MM4CN/Lzo=
 github.com/arisu-archive/arona-flatbuffers v0.1.2-0.20251016155935-aaedd6cf93ee h1:pLAfrBKmj6m7YNJ+RumkD0O/KDzR5MN4ukR8TNr0Rew=
 github.com/arisu-archive/arona-flatbuffers v0.1.2-0.20251016155935-aaedd6cf93ee/go.mod h1:BdAWEPzwiSZGf6pbT9pzgTADu/UVgrYzP1Ld2bmCeME=
+github.com/arisu-archive/arona-flatbuffers v0.3.1 h1:lNNiPOzMm9wpbeFnXJDGXOzsqKMtl1jrY7CGuWqRk0A=
+github.com/arisu-archive/arona-flatbuffers v0.3.1/go.mod h1:BdAWEPzwiSZGf6pbT9pzgTADu/UVgrYzP1Ld2bmCeME=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250523141606-65e055cdb50b h1:aSw1k4pyb+CBLpfREiiZfAVbF7TBLRHijzIoP1Ib/5U=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20250523141606-65e055cdb50b/go.mod h1:TcA0pAoioBOjVpqKszcgRZl23YJGG33cjbRIvxRSMKI=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e h1:QLQebXrcSPbr9cxpNoDbec2nQqk/1fmLwQ3pLrOYa6g=
