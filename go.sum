@@ -20,6 +20,8 @@ github.com/arisu-archive/plana-flatbuffers v0.3.1-0.20251016155312-fa793d487b04 
 github.com/arisu-archive/plana-flatbuffers v0.3.1-0.20251016155312-fa793d487b04/go.mod h1:vWcu5QV+5lIl094enP7juG2Q7ezOB31YkwfhRoD5PC8=
 github.com/arisu-archive/plana-flatbuffers v0.5.1 h1:cKO3CBGNNDRlSroNwG7c5lKhaB/mMkb4K/FCEO9c+Fk=
 github.com/arisu-archive/plana-flatbuffers v0.5.1/go.mod h1:vWcu5QV+5lIl094enP7juG2Q7ezOB31YkwfhRoD5PC8=
+github.com/arisu-archive/plana-flatbuffers v0.6.0 h1:6xCx8opz1BbBlj5eKATgY4p9FA7ymnsuERnZZoU5n5c=
+github.com/arisu-archive/plana-flatbuffers v0.6.0/go.mod h1:r12RdK9y9GVdlzhoPepnHREhuRJ3UbQnpBZYTKuNH80=
 github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=
 github.com/bmatcuk/doublestar/v4 v4.8.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/bmatcuk/doublestar/v4 v4.9.1 h1:X8jg9rRZmJd4yRy7ZeNDRnM+T3ZfHv15JiBJ/avrEXE=
@@ -37,6 +39,8 @@ github.com/go-task/slim-sprig/v3 v3.0.0 h1:sUs3vkvUymDpBKi3qH1YSqBQk9+9D/8M2mN1v
 github.com/go-task/slim-sprig/v3 v3.0.0/go.mod h1:W848ghGpv3Qj3dhTPRyJypKRiqCdHZiAzKg9hl15HA8=
 github.com/google/flatbuffers v25.2.10+incompatible h1:F3vclr7C3HpB1k9mxCGRMXq6FdUalZ6H/pNX4FP1v0Q=
 github.com/google/flatbuffers v25.2.10+incompatible/go.mod h1:1AeVuKshWv4vARoZatz6mlQ0JxURH0Kv5+zNeJKJCa8=
+github.com/google/flatbuffers v25.9.23+incompatible h1:rGZKv+wOb6QPzIdkM2KxhBZCDrA0DeN6DNmRDrqIsQU=
+github.com/google/flatbuffers v25.9.23+incompatible/go.mod h1:1AeVuKshWv4vARoZatz6mlQ0JxURH0Kv5+zNeJKJCa8=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/pprof v0.0.0-20250501235452-c0086092b71a h1:rDA3FfmxwXR+BVKKdz55WwMJ1pD2hJQNW31d+l3mPk4=
