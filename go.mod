@@ -9,7 +9,7 @@ require (
 	github.com/arisu-archive/arona-flatbuffers v0.3.1
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251025193505-8e0d5e7baff5
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
-	github.com/arisu-archive/plana-flatbuffers v0.6.0
+	github.com/arisu-archive/plana-flatbuffers v0.6.1
 	github.com/bmatcuk/doublestar/v4 v4.9.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0

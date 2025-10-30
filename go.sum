@@ -24,6 +24,8 @@ github.com/arisu-archive/plana-flatbuffers v0.5.1 h1:cKO3CBGNNDRlSroNwG7c5lKhaB/
 github.com/arisu-archive/plana-flatbuffers v0.5.1/go.mod h1:vWcu5QV+5lIl094enP7juG2Q7ezOB31YkwfhRoD5PC8=
 github.com/arisu-archive/plana-flatbuffers v0.6.0 h1:6xCx8opz1BbBlj5eKATgY4p9FA7ymnsuERnZZoU5n5c=
 github.com/arisu-archive/plana-flatbuffers v0.6.0/go.mod h1:r12RdK9y9GVdlzhoPepnHREhuRJ3UbQnpBZYTKuNH80=
+github.com/arisu-archive/plana-flatbuffers v0.6.1 h1:eHmzK3Q5BpU1f7w6z5KSovmwWBRWntSXhfr0CexCSuE=
+github.com/arisu-archive/plana-flatbuffers v0.6.1/go.mod h1:r12RdK9y9GVdlzhoPepnHREhuRJ3UbQnpBZYTKuNH80=
 github.com/bmatcuk/doublestar/v4 v4.8.1 h1:54Bopc5c2cAvhLRAzqOGCYHYyhcDHsFF4wWIR5wKP38=
 github.com/bmatcuk/doublestar/v4 v4.8.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/bmatcuk/doublestar/v4 v4.9.1 h1:X8jg9rRZmJd4yRy7ZeNDRnM+T3ZfHv15JiBJ/avrEXE=
