@@ -8,6 +8,8 @@ github.com/arisu-archive/arona-flatbuffers v0.3.1 h1:lNNiPOzMm9wpbeFnXJDGXOzsqKM
 github.com/arisu-archive/arona-flatbuffers v0.3.1/go.mod h1:BdAWEPzwiSZGf6pbT9pzgTADu/UVgrYzP1Ld2bmCeME=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251025193505-8e0d5e7baff5 h1:XSk7xahyNnYkp4UZlfoFSLqlZZZXx2lMe07yjbFeGU4=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251025193505-8e0d5e7baff5/go.mod h1:n9PFVpzLtcrThjXgFe1TLTdGdZZ/WrSewzzMCS4IDrs=
+github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251110184023-ba9536ab2fc6 h1:webcm0H/3a7jukGg2fkBuSiVLzwEOEo6YeyWY29saCw=
+github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251110184023-ba9536ab2fc6/go.mod h1:gUBNsmHrRvP/jo3omzC2/oUvHGwP7qTIRC+LJqbvxvY=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e h1:QLQebXrcSPbr9cxpNoDbec2nQqk/1fmLwQ3pLrOYa6g=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e/go.mod h1:44G892c0qlQbpqJWj/P94ik+a7POVCm0f4PQAuENm58=
 github.com/arisu-archive/plana-flatbuffers v0.6.1 h1:eHmzK3Q5BpU1f7w6z5KSovmwWBRWntSXhfr0CexCSuE=
@@ -57,6 +59,8 @@ github.com/mfridman/tparse v0.18.0 h1:wh6dzOKaIwkUGyKgOntDW4liXSo37qg5AXbIhkMV3v
 github.com/mfridman/tparse v0.18.0/go.mod h1:gEvqZTuCgEhPbYk/2lS3Kcxg1GmTxxU7kTC8DvP0i/A=
 github.com/onsi/ginkgo/v2 v2.27.1 h1:0LJC8MpUSQnfnp4n/3W3GdlmJP3ENGF0ZPzjQGLPP7s=
 github.com/onsi/ginkgo/v2 v2.27.1/go.mod h1:wmy3vCqiBjirARfVhAqFpYt8uvX0yaFe+GudAqqcCqA=
+github.com/onsi/ginkgo/v2 v2.27.2 h1:LzwLj0b89qtIy6SSASkzlNvX6WktqurSHwkk2ipF/Ns=
+github.com/onsi/ginkgo/v2 v2.27.2/go.mod h1:ArE1D/XhNXBXCBkKOLkbsb2c81dQHCRcF5zwn/ykDRo=
 github.com/onsi/gomega v1.38.2 h1:eZCjf2xjZAqe+LeWvKb5weQ+NcPwX84kqJ0cZNxok2A=
 github.com/onsi/gomega v1.38.2/go.mod h1:W2MJcYxRGV63b418Ai34Ud0hEdTVXq9NW9+Sx6uXf3k=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
