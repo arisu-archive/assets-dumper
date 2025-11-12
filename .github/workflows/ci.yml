@@ -82,7 +82,6 @@ jobs:
       - name: Run linter
         uses: golangci/golangci-lint-action@v9.0.0
         with:
-          version: v1.64
           args: --timeout 5m
 
       - name: Security audit
