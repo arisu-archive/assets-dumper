@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: ["master", "develop"]
   pull_request:
-    branches: [ "master", "develop" ]
+    branches: ["master", "develop"]
 
 jobs:
   test:
@@ -12,94 +12,79 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.24']
+        go: ["1.24"]
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
 
-    - name: Set up Go
-      uses: actions/setup-go@v6
-      with:
-        go-version: ${{ matrix.go }}
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go }}
 
-    - name: Setup SSH agent
-      uses: webfactory/ssh-agent@v0.9.1
-      with:
-        ssh-private-key: |
-          ${{secrets.ARONA_FLATBUFFERS_PRIVATE_KEY}}
-          ${{secrets.PLANA_FLATBUFFERS_PRIVATE_KEY}}
-          ${{secrets.ARONA_FBS_UTILS_PRIVATE_KEY}}
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            $(go env GOMODCACHE)
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/go/pkg/mod
-          $(go env GOMODCACHE)
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+      - name: Setup environment
+        run: |
+          make prepare
+          make mocks
 
-    - name: Setup environment
-      run: |
-        make prepare
-        make mocks
+      - name: Run tests
+        env:
+          GOPRIVATE: github.com/arisu-archive
+        run: |
+          make test
 
-    - name: Run tests
-      env:
-        GOPRIVATE: github.com/arisu-archive
-      run: |
-        make test
-
-    - name: Upload coverage
-      uses: codecov/codecov-action@v5
-      with:
-        file: coverage.out
-        flags: unittests
-        env_vars: OS,PYTHON
-        name: codecov-umbrella
-        fail_ci_if_error: true
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          file: coverage.out
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-umbrella
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
     needs: test
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-go@v6
-      with:
-        go-version: '1.25'
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
 
-    - name: Setup SSH agent
-      uses: webfactory/ssh-agent@v0.9.1
-      with:
-        ssh-private-key: |
-          ${{secrets.ARONA_FLATBUFFERS_PRIVATE_KEY}}
-          ${{secrets.ARONA_FBS_UTILS_PRIVATE_KEY}}
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            $(go env GOMODCACHE)
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/go/pkg/mod
-          $(go env GOMODCACHE)
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+      - name: Prepare environment
+        run: |
+          make prepare
+          make mocks
+          make tidy
 
-    - name: Prepare environment
-      run: |
-        make prepare
-        make mocks
-        make tidy
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v6.5.2
+        with:
+          version: v1.64
+          args: --timeout 5m
 
-    - name: Run linter
-      uses: golangci/golangci-lint-action@v6.5.2
-      with:
-        version: v1.64
-        args: --timeout 5m
-
-    - name: Security audit
-      run: |
-        go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+      - name: Security audit
+        run: |
+          go run golang.org/x/vuln/cmd/govulncheck@latest ./...
