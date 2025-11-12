@@ -243,7 +243,7 @@ var _ = Describe("Japan Client", func() {
 				),
 				// BundleDownloadInfo request
 				ghttp.CombineHandlers(
-					ghttp.VerifyRequest("GET", "/resources/Android/bundleDownloadInfo.json"),
+					ghttp.VerifyRequest("GET", "/resources/Android_PatchPack/BundlePackingInfo.json"),
 					ghttp.RespondWith(http.StatusOK, bundleDownloadInfoJSON),
 				),
 			)
