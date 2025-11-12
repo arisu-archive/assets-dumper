@@ -116,11 +116,11 @@ func (c *Client) ListResources(ctx context.Context, filter string) ([]resourceap
 	return filteredResources, nil
 }
 
-func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error) {
+func (*Client) DownloadPatch(_ context.Context, _ string) (io.ReadCloser, int64, error) {
 	return nil, 0, errors.New("not implemented")
 }
 
-func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
+func (*Client) ListPatches(_ context.Context, _ string) ([]resourceapi.Resource, error) {
 	return nil, errors.New("not implemented")
 }
 

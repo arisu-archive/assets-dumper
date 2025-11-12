@@ -48,17 +48,17 @@ type TableBundle struct {
 }
 
 type BundleDownloadInfo struct {
-	Milestone    string       `json:"Milestone"`
-	PatchVersion int64        `json:"PatchVersion"`
-	FullPatchPacks        []PatchPack `json:"FullPatchPacks"`
+	Milestone      string      `json:"Milestone"`
+	PatchVersion   int64       `json:"PatchVersion"`
+	FullPatchPacks []PatchPack `json:"FullPatchPacks"`
 }
 
 type PatchPack struct {
-	PackName            string `json:"PackName"`
-	PackSize            int64  `json:"PackSize"`
-	Crc             int64  `json:"Crc"`
-	IsPrologue      bool   `json:"IsPrologue"`
-	IsSplitDownload bool   `json:"IsSplitDownload"`
+	PackName        string       `json:"PackName"`
+	PackSize        int64        `json:"PackSize"`
+	Crc             int64        `json:"Crc"`
+	IsPrologue      bool         `json:"IsPrologue"`
+	IsSplitDownload bool         `json:"IsSplitDownload"`
 	BundleFiles     []BundleFile `json:"BundleFiles"`
 }
 

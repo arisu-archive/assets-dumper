@@ -20,7 +20,7 @@ func sqliteExtractorCommon(ctx context.Context, provider ExcelProvider, inputPat
 	}
 	defer db.Close()
 
-	tableNames, err := getSqliteTableNames(db)
+	tableNames, err := getSqliteTableNames(ctx, db)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +47,8 @@ func openSqliteDatabase(path string) (*sql.DB, error) {
 	return db, nil
 }
 
-func getSqliteTableNames(db *sql.DB) ([]string, error) {
-	tblRows, err := db.Query("SELECT name FROM sqlite_master WHERE type='table'")
+func getSqliteTableNames(ctx context.Context, db *sql.DB) ([]string, error) {
+	tblRows, err := db.QueryContext(ctx, "SELECT name FROM sqlite_master WHERE type='table'")
 	if err != nil {
 		return nil, fmt.Errorf("failed to query tables: %w", err)
 	}
@@ -70,7 +70,12 @@ func getSqliteTableNames(db *sql.DB) ([]string, error) {
 	return tableNames, nil
 }
 
-func processAllTablesCommon(ctx context.Context, provider ExcelProvider, db *sql.DB, tableNames []string) ([]ExtractedFile, error) {
+func processAllTablesCommon(
+	ctx context.Context,
+	provider ExcelProvider,
+	db *sql.DB,
+	tableNames []string,
+) ([]ExtractedFile, error) {
 	files := make([]ExtractedFile, 0, len(tableNames))
 
 	for _, name := range tableNames {
@@ -87,14 +92,19 @@ func processAllTablesCommon(ctx context.Context, provider ExcelProvider, db *sql
 	return files, nil
 }
 
-func processTableCommon(ctx context.Context, provider ExcelProvider, db *sql.DB, tableName string) (*ExtractedFile, error) {
+func processTableCommon(
+	ctx context.Context,
+	provider ExcelProvider,
+	db *sql.DB,
+	tableName string,
+) (*ExtractedFile, error) {
 	slog.DebugContext(ctx, "Table", "name", strings.TrimSuffix(tableName, "DBSchema"))
 
 	// Some tables contains underscore, and our mapping is from the actual struct name.
 	flatbufferName := strings.ReplaceAll(strings.TrimSuffix(tableName, "DBSchema")+"Excel", "_", "")
 
 	// Query the table
-	rows, err := db.Query(fmt.Sprintf("SELECT Bytes FROM %s", tableName))
+	rows, err := db.QueryContext(ctx, fmt.Sprintf("SELECT Bytes FROM %s", tableName))
 	if err != nil {
 		return nil, fmt.Errorf("failed to query table: %w", err)
 	}
@@ -119,7 +129,12 @@ func processTableCommon(ctx context.Context, provider ExcelProvider, db *sql.DB,
 	}, nil
 }
 
-func extractTableDataCommon(ctx context.Context, provider ExcelProvider, rows *sql.Rows, flatbufferName string) ([]any, error) {
+func extractTableDataCommon(
+	ctx context.Context,
+	provider ExcelProvider,
+	rows *sql.Rows,
+	flatbufferName string,
+) ([]any, error) {
 	var schemaData []any
 
 	for rows.Next() {

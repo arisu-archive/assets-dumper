@@ -128,11 +128,11 @@ func (c *Client) DownloadResource(ctx context.Context, resourcePath string) (io.
 }
 
 func (c *Client) DownloadPatch(ctx context.Context, patchPath string) (io.ReadCloser, int64, error) {
-	_, err := c.getPatchURI(ctx)
+	patchURI, err := c.getPatchURI(ctx)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to get resource path: %w", err)
 	}
-	fullPath := fmt.Sprintf("%s/%s", c.patchURI, strings.TrimPrefix(patchPath, "/"))
+	fullPath := fmt.Sprintf("%s/%s", patchURI, strings.TrimPrefix(patchPath, "/"))
 	slog.DebugContext(ctx, "DownloadPatch", "fullPath", fullPath)
 	resp, err := c.client.R().SetDoNotParseResponse(true).SetContext(ctx).Get(fullPath)
 	if err != nil {
@@ -192,11 +192,11 @@ func (c *Client) GetLatestPatchVersion(ctx context.Context) (string, error) {
 }
 
 func (c *Client) ListPatches(ctx context.Context, filter string) ([]resourceapi.Resource, error) {
-	_, err := c.getPatchURI(ctx)
+	patchURI, err := c.getPatchURI(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get patch path: %w", err)
 	}
-	resp, err := c.client.R().SetContext(ctx).Get(c.patchPath)
+	resp, err := c.client.R().SetContext(ctx).Get(patchURI)
 	if err != nil {
 		return nil, fmt.Errorf("failed to download patch: %w", err)
 	}
@@ -346,13 +346,13 @@ func (c *Client) getPatchURI(ctx context.Context) (string, error) {
 	if c.patchVersion == 0 {
 		c.patchVersion = versionCheckResp.Patch.PatchVersion
 		for _, v := range versionCheckResp.Patch.BdiffPath[0] {
-			parsedPatchURL, err := url.Parse(v)
-			if err != nil {
-				return "", fmt.Errorf("failed to parse URL: %w", err)
+			parsedPatchURL, parseErr := url.Parse(v)
+			if parseErr != nil {
+				return "", fmt.Errorf("failed to parse URL: %w", parseErr)
 			}
 			c.patchPath = v
-			dir, _ := path.Split(parsedPatchURL.Path)
-			parsedPatchURL.Path = dir
+			d, _ := path.Split(parsedPatchURL.Path)
+			parsedPatchURL.Path = d
 			c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
 			return c.patchURI, nil
 		}
@@ -360,13 +360,13 @@ func (c *Client) getPatchURI(ctx context.Context) (string, error) {
 	// Get the value of the map[string]string (bdiffPath is the map and we dont know the key)
 	for _, bdiffPatchMap := range versionCheckResp.Patch.BdiffPath {
 		if patchURL, ok := bdiffPatchMap[strconv.FormatInt(c.patchVersion, 10)]; ok {
-			parsedPatchURL, err := url.Parse(patchURL)
-			if err != nil {
-				return "", fmt.Errorf("failed to parse URL: %w", err)
+			parsedPatchURL, parseErr := url.Parse(patchURL)
+			if parseErr != nil {
+				return "", fmt.Errorf("failed to parse URL: %w", parseErr)
 			}
 			c.patchPath = patchURL
-			dir, _ := path.Split(parsedPatchURL.Path)
-			parsedPatchURL.Path = dir
+			d, _ := path.Split(parsedPatchURL.Path)
+			parsedPatchURL.Path = d
 			c.patchURI = strings.TrimSuffix(parsedPatchURL.String(), "/")
 			return c.patchURI, nil
 		}
