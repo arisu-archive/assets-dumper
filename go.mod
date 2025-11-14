@@ -7,7 +7,7 @@ toolchain go1.25.4
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/arisu-archive/arona-flatbuffers v0.3.1
-	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251025193505-8e0d5e7baff5
+	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251110184023-ba9536ab2fc6
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
 	github.com/arisu-archive/plana-flatbuffers v0.6.1
 	github.com/bmatcuk/doublestar/v4 v4.9.1
