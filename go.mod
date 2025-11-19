@@ -9,7 +9,7 @@ require (
 	github.com/arisu-archive/arona-flatbuffers v0.3.1
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251110184023-ba9536ab2fc6
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
-	github.com/arisu-archive/plana-flatbuffers v0.6.1
+	github.com/arisu-archive/plana-flatbuffers v0.7.0
 	github.com/bmatcuk/doublestar/v4 v4.9.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/uuid v1.6.0
@@ -36,10 +36,8 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
-	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/net v0.43.0 // indirect
