@@ -10,7 +10,7 @@ require (
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251204154751-651482551f83
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
 	github.com/arisu-archive/plana-flatbuffers v0.9.0
-	github.com/bmatcuk/doublestar/v4 v4.9.1
+	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/google/uuid v1.6.0
 	github.com/mattn/go-sqlite3 v1.14.34
