@@ -87,7 +87,6 @@ func (e *Result) prepareReader(ctx context.Context, f ExtractedFile) (io.Reader,
 			)
 			return nil, true
 		}
-		slog.WarnContext(ctx, "failed to setup decryption reader", "error", dErr)
 		return f.Reader, false
 	}
 	return dr, false

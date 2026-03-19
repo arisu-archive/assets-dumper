@@ -9,11 +9,11 @@ require (
 	github.com/arisu-archive/arona-flatbuffers v0.6.0
 	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251204154751-651482551f83
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
-	github.com/arisu-archive/plana-flatbuffers v0.10.0
+	github.com/arisu-archive/plana-flatbuffers v0.11.0
 	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/google/uuid v1.6.0
-	github.com/mattn/go-sqlite3 v1.14.34
+	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
 	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
 	github.com/spf13/cobra v1.10.2
@@ -25,7 +25,6 @@ require (
 require (
 	github.com/VividCortex/ewma v1.2.0 // indirect
 	github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d // indirect
-	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect

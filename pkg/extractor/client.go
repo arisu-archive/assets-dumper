@@ -15,20 +15,35 @@ type Client interface {
 	Extract(ctx context.Context, inputPath, outputPath string) error
 }
 
+// Option is a functional option for the extractor client.
+type Option func(*client)
+
+// WithKey sets the SQLCipher database key for encrypted database extraction.
+func WithKey(key []byte) Option {
+	return func(c *client) {
+		c.key = key
+	}
+}
+
 type client struct {
 	server    resourceapi.Server
 	decryptor decryption.Client
+	key       []byte
 }
 
-func New(server resourceapi.Server) Client {
-	return NewWithDecryptor(server, decryption.New(server))
+func New(server resourceapi.Server, opts ...Option) Client {
+	return NewWithDecryptor(server, decryption.New(server), opts...)
 }
 
-func NewWithDecryptor(server resourceapi.Server, d decryption.Client) Client {
-	return &client{
+func NewWithDecryptor(server resourceapi.Server, d decryption.Client, opts ...Option) Client {
+	c := &client{
 		server:    server,
 		decryptor: d,
 	}
+	for _, opt := range opts {
+		opt(c)
+	}
+	return c
 }
 
 func (c *client) Extract(ctx context.Context, inputPath, outputPath string) error {
@@ -40,7 +55,7 @@ func (c *client) Extract(ctx context.Context, inputPath, outputPath string) erro
 
 	// Process each file based on the file extension
 	for _, file := range files {
-		extractor := extractor(c.server, FileFormat(filepath.Ext(file)))
+		extractor := c.getExtractor(FileFormat(filepath.Ext(file)))
 		if extractor == nil {
 			slog.WarnContext(
 				ctx,
@@ -67,6 +82,15 @@ func (c *client) Extract(ctx context.Context, inputPath, outputPath string) erro
 	}
 
 	return nil
+}
+
+// getExtractor returns the appropriate extractor for the given format.
+// For Japan SQLite databases with a key, it returns a key-aware extractor.
+func (c *client) getExtractor(format FileFormat) Extractor {
+	if len(c.key) > 0 && c.server == resourceapi.ServerJapan && format == fileFormatSqlite {
+		return sqliteExtractorJapanWithKey(c.key)
+	}
+	return extractor(c.server, format)
 }
 
 func getFiles(inputPath string) ([]string, error) {

@@ -1,6 +1,7 @@
 package extract
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -37,6 +38,7 @@ func NewCommand() Command {
 	command.Flags().StringVarP(&e.opts.server, "server", "s", "", "server to extract assets from")
 	command.Flags().StringVarP(&e.opts.inputPath, "input", "i", "", "path to the encrypted assets")
 	command.Flags().StringVarP(&e.opts.outputPath, "output", "o", "", "path to save the decrypted assets")
+	command.Flags().StringVarP(&e.opts.key, "key", "k", "", "sqlcipher database key (required for encrypted Japan databases)")
 	if err := command.MarkFlagRequired("input"); err != nil {
 		panic(err)
 	}
@@ -63,7 +65,16 @@ func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("invalid server: %s", c.opts.server)
 	}
 
-	client := extractor.New(s)
+	var opts []extractor.Option
+	if c.opts.key != "" {
+		key, err := base64.StdEncoding.DecodeString(c.opts.key)
+		if err != nil {
+			return fmt.Errorf("invalid key format: %w", err)
+		}
+		opts = append(opts, extractor.WithKey(key))
+	}
+
+	client := extractor.New(s, opts...)
 	if err := client.Extract(ctx, c.opts.inputPath, c.opts.outputPath); err != nil {
 		return fmt.Errorf("failed to extract assets: %w", err)
 	}

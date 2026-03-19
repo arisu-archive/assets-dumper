@@ -10,14 +10,28 @@ import (
 	"path/filepath"
 	"strings"
 
-	_ "github.com/mattn/go-sqlite3" // sqlite3 driver.
+	_ "github.com/mutecomm/go-sqlcipher/v4" // sqlite3 driver with sqlcipher support.
 )
+
+func sqliteExtractorCommonWithKey(ctx context.Context, provider ExcelProvider, inputPath string, key []byte) (*Result, error) {
+	db, err := openSqlcipherDatabase(inputPath, key)
+	if err != nil {
+		return nil, err
+	}
+
+	return sqliteExtractorFromDB(ctx, provider, db, inputPath)
+}
 
 func sqliteExtractorCommon(ctx context.Context, provider ExcelProvider, inputPath string) (*Result, error) {
 	db, err := openSqliteDatabase(inputPath)
 	if err != nil {
 		return nil, err
 	}
+
+	return sqliteExtractorFromDB(ctx, provider, db, inputPath)
+}
+
+func sqliteExtractorFromDB(ctx context.Context, provider ExcelProvider, db *sql.DB, inputPath string) (*Result, error) {
 	defer db.Close()
 
 	tableNames, err := getSqliteTableNames(ctx, db)
@@ -47,6 +61,22 @@ func openSqliteDatabase(path string) (*sql.DB, error) {
 	return db, nil
 }
 
+func openSqlcipherDatabase(path string, key []byte) (*sql.DB, error) {
+	dsn := fmt.Sprintf("%s?_pragma_key=x'%x'&_pragma_cipher_page_size=4096", path, key)
+	db, err := sql.Open("sqlite3", dsn)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open sqlite database: %w", err)
+	}
+
+	// Verify the key is correct by reading the database.
+	if _, queryErr := db.Exec("SELECT count(*) FROM sqlite_master"); queryErr != nil {
+		db.Close()
+		return nil, fmt.Errorf("failed to verify sqlcipher key (wrong key?): %w", queryErr)
+	}
+
+	return db, nil
+}
+
 func getSqliteTableNames(ctx context.Context, db *sql.DB) ([]string, error) {
 	tblRows, err := db.QueryContext(ctx, "SELECT name FROM sqlite_master WHERE type='table'")
 	if err != nil {
@@ -65,6 +95,10 @@ func getSqliteTableNames(ctx context.Context, db *sql.DB) ([]string, error) {
 
 	if tblRows.Err() != nil {
 		return nil, fmt.Errorf("failed to get tables: %w", tblRows.Err())
+	}
+
+	for _, name := range tableNames {
+		slog.DebugContext(ctx, "Found table", "name", name)
 	}
 
 	return tableNames, nil
