@@ -57,8 +57,12 @@ func (c *Client) WithVersion(version string) resourceapi.Client {
 	return c
 }
 
-func (c *Client) WithPatchVersion(patchVersion int64) resourceapi.Client {
-	c.patchVersion = patchVersion
+func (c *Client) WithPatchVersion(patchVersion string) resourceapi.Client {
+	patch, err := (strconv.ParseInt(patchVersion, 10, 64))
+	if err != nil {
+		panic(fmt.Sprintf("invalid patch version: %s", patchVersion))
+	}
+	c.patchVersion = patch
 	return c
 }
 

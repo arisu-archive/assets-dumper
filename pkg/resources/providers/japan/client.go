@@ -25,6 +25,7 @@ type Client struct {
 	resourcePath string
 	retriever    *CatalogRetriever
 	version      string
+	patchVersion string
 }
 
 func NewClient(client *resty.Client) *Client {
@@ -47,7 +48,8 @@ func (c *Client) WithVersion(version string) resourceapi.Client {
 	return c
 }
 
-func (c *Client) WithPatchVersion(_ int64) resourceapi.Client {
+func (c *Client) WithPatchVersion(patchVersion string) resourceapi.Client {
+	c.patchVersion = patchVersion
 	return c
 }
 
@@ -230,12 +232,19 @@ func (c *Client) getResourcePath(ctx context.Context) (string, error) {
 		return c.resourcePath, nil
 	}
 
-	version, err := c.GetLatestVersion(ctx)
-	if err != nil {
-		return "", fmt.Errorf("failed to get version: %w", err)
+	if c.version == "" {
+		version, err := c.GetLatestVersion(ctx)
+		if err != nil {
+			return "", fmt.Errorf("failed to get version: %w", err)
+		}
+		c.version = version
 	}
 
-	catalogURL, err := c.getCatalogURL(ctx, version)
+	if c.patchVersion != "" {
+		return fmt.Sprintf(AddressablesCatalogURLRoot, c.patchVersion), nil
+	}
+
+	catalogURL, err := c.getCatalogURL(ctx, c.version)
 	if err != nil {
 		return "", fmt.Errorf("failed to get catalog URL: %w", err)
 	}

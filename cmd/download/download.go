@@ -43,7 +43,7 @@ func NewCommand() Command {
 	command.Flags().StringVarP(&download.opts.output, "output", "o", "", "path to download to")
 	command.Flags().StringVarP(&download.opts.filter, "filter", "f", "**", "glob filter to apply to the download")
 	command.Flags().StringVarP(&download.opts.version, "version", "", "", "version to download")
-	command.Flags().StringVarP(&download.opts.version, "ver", "", "", "version to download (alias)")
+	command.Flags().StringVarP(&download.opts.patchVersion, "patch", "", "", "patch version to download")
 	command.Flags().IntVarP(
 		&download.opts.maxConcurrency,
 		"max-concurrency",
@@ -57,6 +57,7 @@ func NewCommand() Command {
 	if err := command.MarkFlagRequired("output"); err != nil {
 		panic(err)
 	}
+	command.MarkFlagsRequiredTogether("version", "patch")
 	download.cmd = command
 	return download
 }
@@ -71,6 +72,9 @@ func (c *command) execute(cobraCmd *cobra.Command, _ []string) error {
 	client, err := resources.NewClient(s)
 	if err != nil {
 		return fmt.Errorf("failed to create client: %w", err)
+	}
+	if c.opts.version != "" && c.opts.patchVersion != "" {
+		client = client.WithVersion(c.opts.version).WithPatchVersion(c.opts.patchVersion)
 	}
 
 	files, err := client.ListResources(ctx, c.opts.filter)

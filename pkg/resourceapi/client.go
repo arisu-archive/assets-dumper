@@ -16,5 +16,5 @@ type Client interface {
 	GetLatestPatchVersion(ctx context.Context) (string, error)
 	IsResourceCached(ctx context.Context, resource Resource, fullPath string) bool
 	WithVersion(version string) Client
-	WithPatchVersion(patchVersion int64) Client
+	WithPatchVersion(patchVersion string) Client
 }

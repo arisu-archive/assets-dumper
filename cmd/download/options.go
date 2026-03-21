@@ -6,4 +6,5 @@ type options struct {
 	filter         string
 	maxConcurrency int
 	version        string
+	patchVersion   string
 }
