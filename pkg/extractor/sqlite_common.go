@@ -31,6 +31,12 @@ func sqliteExtractorCommon(ctx context.Context, provider ExcelProvider, inputPat
 	return sqliteExtractorFromDB(ctx, provider, db, inputPath)
 }
 
+func sqliteExtractorWithKey(key []byte) Extractor {
+	return func(ctx context.Context, inputPath string) (*Result, error) {
+		return sqliteExtractorCommonWithKey(ctx, japanExcelProvider, inputPath, key)
+	}
+}
+
 func sqliteExtractorFromDB(ctx context.Context, provider ExcelProvider, db *sql.DB, inputPath string) (*Result, error) {
 	defer db.Close()
 

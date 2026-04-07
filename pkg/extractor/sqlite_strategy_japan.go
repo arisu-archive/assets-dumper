@@ -22,9 +22,3 @@ var japanExcelProvider = &JapanExcelProvider{} //nolint:gochecknoglobals // inte
 func sqliteExtractorJapan(ctx context.Context, inputPath string) (*Result, error) {
 	return sqliteExtractorCommon(ctx, japanExcelProvider, inputPath)
 }
-
-func sqliteExtractorJapanWithKey(key []byte) Extractor {
-	return func(ctx context.Context, inputPath string) (*Result, error) {
-		return sqliteExtractorCommonWithKey(ctx, japanExcelProvider, inputPath, key)
-	}
-}

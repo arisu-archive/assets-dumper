@@ -87,8 +87,8 @@ func (c *client) Extract(ctx context.Context, inputPath, outputPath string) erro
 // getExtractor returns the appropriate extractor for the given format.
 // For Japan SQLite databases with a key, it returns a key-aware extractor.
 func (c *client) getExtractor(format FileFormat) Extractor {
-	if len(c.key) > 0 && c.server == resourceapi.ServerJapan && format == fileFormatSqlite {
-		return sqliteExtractorJapanWithKey(c.key)
+	if len(c.key) > 0 && format == fileFormatSqlite {
+		return sqliteExtractorWithKey(c.key)
 	}
 	return extractor(c.server, format)
 }
