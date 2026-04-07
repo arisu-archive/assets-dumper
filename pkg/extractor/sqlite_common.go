@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/arisu-archive/assets-dumper/pkg/resourceapi"
 	_ "github.com/mutecomm/go-sqlcipher/v4" // sqlite3 driver with sqlcipher support.
 )
 
@@ -31,9 +32,21 @@ func sqliteExtractorCommon(ctx context.Context, provider ExcelProvider, inputPat
 	return sqliteExtractorFromDB(ctx, provider, db, inputPath)
 }
 
-func sqliteExtractorWithKey(key []byte) Extractor {
+func sqliteExtractorWithKey(server resourceapi.Server, key []byte) Extractor {
 	return func(ctx context.Context, inputPath string) (*Result, error) {
-		return sqliteExtractorCommonWithKey(ctx, japanExcelProvider, inputPath, key)
+		provider := getExcelProviderByServer(server)
+		return sqliteExtractorCommonWithKey(ctx, provider, inputPath, key)
+	}
+}
+
+func getExcelProviderByServer(server resourceapi.Server) ExcelProvider {
+	switch server {
+	case resourceapi.ServerGlobal:
+		return globalExcelProvider
+	case resourceapi.ServerJapan:
+		return japanExcelProvider
+	default:
+		panic(fmt.Sprintf("unsupported server: %s", server))
 	}
 }
 

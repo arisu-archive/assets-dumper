@@ -88,7 +88,7 @@ func (c *client) Extract(ctx context.Context, inputPath, outputPath string) erro
 // For Japan SQLite databases with a key, it returns a key-aware extractor.
 func (c *client) getExtractor(format FileFormat) Extractor {
 	if len(c.key) > 0 && format == fileFormatSqlite {
-		return sqliteExtractorWithKey(c.key)
+		return sqliteExtractorWithKey(c.server, c.key)
 	}
 	return extractor(c.server, format)
 }
