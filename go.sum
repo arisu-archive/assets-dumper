@@ -8,6 +8,8 @@ github.com/arisu-archive/arona-flatbuffers v0.6.0 h1:V5Y6Jh/t9mNZcFg+fjpa9HCam+K
 github.com/arisu-archive/arona-flatbuffers v0.6.0/go.mod h1:p8MET6eJfaZaronHzI1zTFWl2p9ukF5GJ9NcvBtemZI=
 github.com/arisu-archive/arona-flatbuffers v0.7.0 h1:dsBJmLt+UN1M2ws1IcKhMm2IQ/HlSqNDTjP506pZ9bY=
 github.com/arisu-archive/arona-flatbuffers v0.7.0/go.mod h1:hp9ryAWIJzu3FoOPgWBL0Mz82UZjcySqu+PMv0IHY/o=
+github.com/arisu-archive/arona-flatbuffers v0.7.1 h1:FljwZAkfk3SXFo33yQOE0CGeRF8AonJcEV0zWOZJk7c=
+github.com/arisu-archive/arona-flatbuffers v0.7.1/go.mod h1:MxWaBZTAqT+X8HUZ2nJeWGrFk0kV0vMAbbQ6Gn4A2oA=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251204154751-651482551f83 h1:MHtBId/Qdcmt+dLY2uiHxOMxRzi4u1jnq4IxcD7ii4E=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20251204154751-651482551f83/go.mod h1:vOvsaBDrAONVArYo9bI/kX+GBw75mRP+J3RDeG9F3SM=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20260406083956-7eadd04b03be h1:kDXID1FUlVYIhNb9Wnb4Me0EUvM3C9eTH0N4/50O2Gg=
