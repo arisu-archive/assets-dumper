@@ -25,7 +25,7 @@ A powerful CLI tool designed to extract and download game assets from Blue Archi
 
 | Tool | Minimum Version |
 |:----:|:---------------:|
-| Go   | ≥ 1.22          |
+| Go   | ≥ 1.25          |
 
 ## ⚙️ Setup Instructions
 
