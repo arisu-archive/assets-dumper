@@ -7,15 +7,15 @@ toolchain go1.26.1
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/arisu-archive/arona-flatbuffers v0.7.1
-	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20260406083956-7eadd04b03be
+	github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20260414204617-714b4abea647
 	github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e
 	github.com/arisu-archive/plana-flatbuffers v0.11.0
 	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/go-resty/resty/v2 v2.17.2
 	github.com/google/uuid v1.6.0
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
-	github.com/onsi/ginkgo/v2 v2.27.2
-	github.com/onsi/gomega v1.38.2
+	github.com/onsi/ginkgo/v2 v2.28.1
+	github.com/onsi/gomega v1.39.1
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/vbauerster/mpb/v8 v8.12.0
@@ -31,7 +31,7 @@ require (
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/flatbuffers v25.12.19+incompatible // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/pprof v0.0.0-20250501235452-c0086092b71a // indirect
+	github.com/google/pprof v0.0.0-20260115054156-294ebfa9ad83 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-runewidth v0.0.21 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
