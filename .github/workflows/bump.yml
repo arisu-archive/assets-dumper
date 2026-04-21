@@ -1,0 +1,69 @@
+name: Bump Flatbuffers
+
+on:
+  repository_dispatch:
+    types: [bump-flatbuffers]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    name: Bump arona/plana flatbuffers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: master
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.26"
+
+      - name: Cache Go modules
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/go/pkg/mod
+            $(go env GOMODCACHE)
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Bump flatbuffers dependencies
+        env:
+          GOPRIVATE: github.com/arisu-archive
+        run: |
+          go get -u github.com/arisu-archive/arona-flatbuffers@latest
+          go get -u github.com/arisu-archive/plana-flatbuffers@latest
+          go mod tidy
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet go.mod go.sum; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No version changes; both packages already at latest."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/bump-flatbuffers
+          base: master
+          commit-message: "chore(dep): bump arona-flatbuffers and plana-flatbuffers to latest"
+          title: "chore(dep): bump arona-flatbuffers and plana-flatbuffers to latest"
+          body: |
+            Automated bump of `arona-flatbuffers` and `plana-flatbuffers` to their latest versions.
+
+            Triggered by `${{ github.event_name }}` — [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          delete-branch: true
