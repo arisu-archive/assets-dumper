@@ -77,7 +77,7 @@ jobs:
           make tidy
 
       - name: Run linter
-        uses: golangci/golangci-lint-action@v9.0.0
+        uses: golangci/golangci-lint-action@v9.2.0
         with:
           args: --timeout 5m
 
