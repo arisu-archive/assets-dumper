@@ -21,8 +21,23 @@ const (
 
 //nolint:gochecknoinits // This is a registry
 func init() {
-	registry.Store(decryptorKey(resourceapi.ServerGlobal, fileFormatFlatdata), Reader(flatdataReader))
-	registry.Store(decryptorKey(resourceapi.ServerJapan, fileFormatFlatdata), Reader(flatdataReaderJapan))
+	registry.Store(
+		decryptorKey(resourceapi.ServerGlobal, fileFormatFlatdata), flatdataReader(&globalFlatDataProvider{}),
+	)
+	registry.Store(
+		decryptorKey(resourceapi.ServerJapan, fileFormatFlatdata), flatdataReader(&japanFlatDataProvider{}),
+	)
+}
+
+func flatdataReader(p FlatDataProvider) Reader {
+	return func(ctx context.Context, name string, size uint64, r io.Reader) (io.Reader, error) {
+		return flatdataReaderCommon(ctx, flatdataReaderOptions{
+			provider: p,
+			name:     name,
+			size:     size,
+			r:        r,
+		})
+	}
 }
 
 func decryptorKey(server resourceapi.Server, extension FileFormat) string {
