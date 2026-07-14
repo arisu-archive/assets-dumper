@@ -4,8 +4,8 @@ github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1o
 github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
 github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d h1:licZJFw2RwpHMqeKTCYkitsPqHNxTmd4SNR5r94FGM8=
 github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d/go.mod h1:asat636LX7Bqt5lYEZ27JNDcqxfjdBQuJ/MM4CN/Lzo=
-github.com/arisu-archive/arona-flatbuffers v0.8.1 h1:q1VlVRKJJK73SKmW6/s60ks35ayM38BbHNJ7n7fjNK4=
-github.com/arisu-archive/arona-flatbuffers v0.8.1/go.mod h1:kYLvMerNFqiYAtEhYYq2hzl2UJmr8mNvMkfxDpLtZ6w=
+github.com/arisu-archive/arona-flatbuffers v0.9.0 h1:2WaO80n8JxNQXwGWvB/EU5ErVLh1p824yqyoxrqsWjY=
+github.com/arisu-archive/arona-flatbuffers v0.9.0/go.mod h1:kYLvMerNFqiYAtEhYYq2hzl2UJmr8mNvMkfxDpLtZ6w=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20260501232406-c0b3ccdb8eaa h1:g9JIeO1WB0oyfbmvADNtJgYsFqnm1HkT53qwn6/klak=
 github.com/arisu-archive/bluearchive-fbs-utils v0.0.0-20260501232406-c0b3ccdb8eaa/go.mod h1:xVV8J56yx9gEu5a4x/zDMWpYyHuaoKT1pGoVA1za5X8=
 github.com/arisu-archive/memorypack-go v0.0.0-20250304173138-3a39e4bd971e h1:QLQebXrcSPbr9cxpNoDbec2nQqk/1fmLwQ3pLrOYa6g=
